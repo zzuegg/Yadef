@@ -4,6 +4,7 @@ import com.jme3.material.Material;
 import com.jme3.shader.VarType;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 
 /**
@@ -30,12 +31,12 @@ public class GBuffer {
             lightFrameBuffer = new FrameBuffer(width, height, 1);
 
 
-            worldPositionLinearDepth = new Texture2D(width, height, Image.Format.RGBA16F);
-            worldNormal = new Texture2D(width, height, Image.Format.RGB16F);
-            albedo = new Texture2D(width, height, Image.Format.RGB8);
-            specular = new Texture2D(width, height, Image.Format.RGB8);
-            depthStencil = new Texture2D(width, height, Image.Format.Depth32F);
-            light = new Texture2D(width, height, Image.Format.RGB16F);
+            worldPositionLinearDepth = applyFilters(new Texture2D(width, height, Image.Format.RGBA16F));
+            worldNormal = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
+            albedo = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
+            specular = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
+            depthStencil = applyFilters(new Texture2D(width, height, Image.Format.Depth24Stencil8));
+            light = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
 
             renderFrameBuffer.addColorTexture(worldPositionLinearDepth);
             renderFrameBuffer.addColorTexture(worldNormal);
@@ -46,6 +47,12 @@ public class GBuffer {
             lightFrameBuffer.setDepthTexture(depthStencil);
             lightFrameBuffer.setColorTexture(light);
         }
+    }
+
+    Texture2D applyFilters(Texture2D texture2D) {
+        texture2D.setMagFilter(Texture.MagFilter.Nearest);
+        texture2D.setMinFilter(Texture.MinFilter.NearestNoMipMaps);
+        return texture2D;
     }
 
     protected FrameBuffer getRenderFrameBuffer() {

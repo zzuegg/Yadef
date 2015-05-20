@@ -14,7 +14,7 @@ uniform sampler2D m_normalTexture;
 
 void main(){
     WorldPosDepthOut=position;
-    vec3 textureNormal = normalize(texture2D(m_normalTexture, texCoord).xyz * 2.0 - 1.0);
+    vec3 textureNormal = normalize(texture2D(m_normalTexture, texCoord).xyz * vec3(2.0,2.0,2.0) - vec3(1.0,1.0,1.0));
     NormalOut=vec4(normalize(tangent * textureNormal.x + binormal * textureNormal.y + normal * textureNormal.z),1);
     //NormalOut=vec4(normal,1);
     DiffuseOut=texture(m_diffuseTexture,texCoord);
