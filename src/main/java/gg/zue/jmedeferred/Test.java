@@ -41,7 +41,7 @@ public class Test extends SimpleApplication {
     }
 
     private void addPointLights() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10000; i++) {
             PointLight pointLight = new PointLight();
             pointLight.setColor(ColorRGBA.randomColor());
             pointLight.setRadius(40);

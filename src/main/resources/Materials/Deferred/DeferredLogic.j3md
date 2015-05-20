@@ -27,10 +27,10 @@ MaterialDef DeferredDebug {
         }
     }
 
-    Technique CalculatePointLights{
+    Technique CalculatePointLightsGeo{
         VertexShader GLSL400: Materials/Deferred/PointLightsGeo.vert
         GeometryShader GLSL400: Materials/Deferred/PointLightsGeo.geom
-        FragmentShader GLSL400: Materials/Deferred/PointLightsGeo.frag
+        FragmentShader GLSL400: Materials/Deferred/PointLights.frag
         WorldParameters {
             WorldViewProjectionMatrix
             NormalMatrix
@@ -40,4 +40,14 @@ MaterialDef DeferredDebug {
             Resolution
         }
     }
+
+        Technique CalculatePointLights{
+            VertexShader GLSL400: Materials/Deferred/PointLights.vert
+            FragmentShader GLSL400: Materials/Deferred/PointLights.frag
+            WorldParameters {
+                WorldViewProjectionMatrix
+                Resolution
+                NormalMatrix
+            }
+        }
 }

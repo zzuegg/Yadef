@@ -1,7 +1,6 @@
 uniform mat3 g_NormalMatrix;
 uniform vec2 g_Resolution;
 in vec3 lightColor;
-in vec2 samplePos;
 in vec4 pointLightPositionRadius;
 
 layout (location = 0) out vec4 lightOut;

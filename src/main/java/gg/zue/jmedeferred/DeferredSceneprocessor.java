@@ -14,17 +14,18 @@ import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.*;
 import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
 import com.jme3.shader.VarType;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.TempVars;
+import jme3tools.optimize.GeometryBatchFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Created by MiZu on 19.05.2015.
@@ -42,12 +43,31 @@ public class DeferredSceneprocessor implements SceneProcessor {
     private Material resolveMaterial;
     private Material debugMaterial;
 
+    private Geometry pointLightPatch;
+
+    private boolean usePointLightGeometryShader = false;
+
     public DeferredSceneprocessor(AssetManager assetManager) {
         this.assetManager = assetManager;
         this.resolveQuad = new Geometry("FsQuad", new Quad(1, 1));
         this.resolveMaterial = new Material(assetManager, "Materials/Deferred/DeferredLogic.j3md");
         this.debugMaterial = new Material(assetManager, "Materials/Deferred/Debug/DeferredDebug.j3md");
         this.resolveQuad.setMaterial(resolveMaterial);
+
+        generatePointLightMesh();
+    }
+
+    private void generatePointLightMesh() {
+        Mesh pointLightMesh = new Mesh();
+        Geometry geometry = new Geometry("PointLight", new Sphere(6, 6, 1));
+        System.out.println(geometry.getMesh().getVertexCount());
+        Collection<Geometry> plGeo = new ArrayList<>();
+        for (int i = 0; i < 500; i++) {
+            plGeo.add(geometry.clone());
+        }
+        GeometryBatchFactory.mergeGeometries(plGeo, pointLightMesh);
+        pointLightPatch = new Geometry("PointLights", pointLightMesh);
+        pointLightPatch.setMaterial(resolveMaterial);
     }
 
     @Override
@@ -108,8 +128,13 @@ public class DeferredSceneprocessor implements SceneProcessor {
         renderManager.setForcedTechnique("DeferredResolve");
         renderManager.renderGeometry(resolveQuad);
     }
-
+    long ms;
     private void renderLightCalculationPass() {
+        if(ms<System.currentTimeMillis()){
+            usePointLightGeometryShader=!usePointLightGeometryShader;
+            System.out.println(usePointLightGeometryShader);
+            ms=System.currentTimeMillis()+5000;
+        }
         ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
         ArrayList<PointLight> pointLights = new ArrayList<>();
         ColorRGBA ambientLight = new ColorRGBA(0, 0, 0, 0);
@@ -170,23 +195,31 @@ public class DeferredSceneprocessor implements SceneProcessor {
                 count++;
 
             }
-
-            Mesh mesh = new Mesh();
-            mesh.setBuffer(VertexBuffer.Type.Position, 4, BufferUtils.createFloatBuffer(pointLightPositionRadius));
-            mesh.setBuffer(VertexBuffer.Type.Color, 3, BufferUtils.createFloatBuffer(pointLightColors));
-            mesh.setBuffer(VertexBuffer.Type.Index, 1, BufferUtils.createIntBuffer(pointLightId));
-            mesh.setMode(Mesh.Mode.Points);
-            renderState.setFaceCullMode(RenderState.FaceCullMode.Front);
-            renderManager.setForcedMaterial(resolveMaterial);
-            renderManager.setForcedTechnique("CalculatePointLights");
-            Geometry geometry = new Geometry("PointLights", mesh);
-            renderManager.renderGeometry(geometry);
-            /*resolveMaterial.setParam("lightCount", VarType.Int, pointLights.size());
-            resolveMaterial.setParam("pointLightPositionRadius", VarType.Vector4Array, pointLightPositionRadius);
-            resolveMaterial.setParam("pointLightColors", VarType.Vector3Array, pointLightColors);
-            renderManager.setForcedMaterial(resolveMaterial);
-            renderManager.setForcedTechnique("CalculatePointLights");
-            renderManager.renderGeometry(resolveQuad);*/
+            if (usePointLightGeometryShader) {
+                Mesh mesh = new Mesh();
+                mesh.setBuffer(VertexBuffer.Type.Position, 4, BufferUtils.createFloatBuffer(pointLightPositionRadius));
+                mesh.setBuffer(VertexBuffer.Type.Color, 3, BufferUtils.createFloatBuffer(pointLightColors));
+                mesh.setBuffer(VertexBuffer.Type.Index, 1, BufferUtils.createIntBuffer(pointLightId));
+                mesh.setMode(Mesh.Mode.Points);
+                renderState.setFaceCullMode(RenderState.FaceCullMode.Front);
+                renderManager.setForcedMaterial(resolveMaterial);
+                renderManager.setForcedTechnique("CalculatePointLightsGeo");
+                Geometry geometry = new Geometry("PointLights", mesh);
+                renderManager.renderGeometry(geometry);
+            } else {
+                renderState.setFaceCullMode(RenderState.FaceCullMode.Front);
+                renderManager.setForcedMaterial(resolveMaterial);
+                renderManager.setForcedTechnique("CalculatePointLights");
+                for (int i = 0; i < pointLightColors.length; i = i + 500) {
+                    int size = Math.min(i + 500, pointLightColors.length);
+                    Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, size);
+                    Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, size);
+                    resolveMaterial.setParam("lightCount", VarType.Int, size);
+                    resolveMaterial.setParam("pointLightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);
+                    resolveMaterial.setParam("pointLightColors", VarType.Vector3Array, pointLightColorsTmp);
+                    renderManager.renderGeometry(pointLightPatch);
+                }
+            }
         }
         renderManager.setForcedRenderState(null);
     }
