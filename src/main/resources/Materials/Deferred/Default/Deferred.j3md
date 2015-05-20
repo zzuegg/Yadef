@@ -1,0 +1,16 @@
+MaterialDef Deferred {
+    MaterialParameters{
+
+    }
+
+    Technique{
+        VertexShader GLSL400: Materials/Deferred/Default/Deferred.vert
+        FragmentShader GLSL400: Materials/Deferred/Default/Deferred.frag
+
+                WorldParameters {
+                    WorldMatrix
+                    NormalMatrix
+                    WorldViewProjectionMatrix
+                }
+    }
+}

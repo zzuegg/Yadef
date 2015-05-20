@@ -1,0 +1,43 @@
+MaterialDef DeferredDebug {
+    MaterialParameters{
+        Texture2D gbWorldPosLinearDepth;
+        Texture2D gbWorldNormal;
+        Texture2D gbAlbedo;
+        Texture2D gbSpecular;
+        Texture2D gbLight;
+
+        Int lightCount;
+        Vector3Array directionalLightDirections;
+        Vector3Array directionalLightColors;
+
+        Vector4Array pointLightPositionRadius;
+        Vector3Array pointLightColors;
+    }
+
+    Technique DeferredTest{
+        VertexShader GLSL400: Materials/Deferred/FsQuad.vert
+        FragmentShader GLSL400: Materials/Deferred/Debug.frag
+    }
+
+    Technique CalculateDirectionalLights{
+        VertexShader GLSL400: Materials/Deferred/FsQuad.vert
+        FragmentShader GLSL400: Materials/Deferred/DirectionalLights.frag
+        WorldParameters {
+            NormalMatrix
+        }
+    }
+
+    Technique CalculatePointLights{
+        VertexShader GLSL400: Materials/Deferred/PointLightsGeo.vert
+        GeometryShader GLSL400: Materials/Deferred/PointLightsGeo.geom
+        FragmentShader GLSL400: Materials/Deferred/PointLightsGeo.frag
+        WorldParameters {
+            WorldViewProjectionMatrix
+            NormalMatrix
+            CameraLeft
+            CameraUp
+            CameraDirection
+            Resolution
+        }
+    }
+}
