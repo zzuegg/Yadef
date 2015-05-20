@@ -16,9 +16,9 @@ layout (location = 0) out vec4 lightOut;
 void main(){
     vec3 worldNormal=texture(m_gbWorldNormal,fragTexCoord).xyz;
     for(int i=0;i<m_lightCount;i++){
-        float lightPower=dot((g_NormalMatrix*(m_directionalLightDirections[i]*vec3(-1,-1,-1))).xyz,worldNormal);
+        float lightPower=max(dot(normalize((g_NormalMatrix*(normalize(m_directionalLightDirections[i])))).xyz,normalize(worldNormal)),0);
         lightOut += vec4(lightPower*m_directionalLightColors[i],0);
     }
-    lightOut=normalize(lightOut);
+    //lightOut=normalize(lightOut);
     //lightOut=vec4(fragTexCoord,0,0);
 }

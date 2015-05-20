@@ -13,6 +13,8 @@ out vec3 tangent;
 out vec4 position;
 out vec2 texCoord;
 
+
+
 void main(){
     vec4 pos=vec4(inPosition,1.0);
     gl_Position=g_WorldViewProjectionMatrix * pos;

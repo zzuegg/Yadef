@@ -24,4 +24,5 @@ void main(){
         float dist = length(lightVector);
         float fallof = attenuation(pointLightPositionRadius.a, dist);
         lightOut=vec4(fallof*lambert*lightColor,1);
+        //lightOut=vec4(lightColor,1);
 }

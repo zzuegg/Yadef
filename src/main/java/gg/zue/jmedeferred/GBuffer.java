@@ -31,10 +31,10 @@ public class GBuffer {
 
 
             worldPositionLinearDepth = new Texture2D(width, height, Image.Format.RGBA16F);
-            worldNormal = new Texture2D(width, height, Image.Format.RGB8);
+            worldNormal = new Texture2D(width, height, Image.Format.RGB16F);
             albedo = new Texture2D(width, height, Image.Format.RGB8);
             specular = new Texture2D(width, height, Image.Format.RGB8);
-            depthStencil = new Texture2D(width, height, Image.Format.Depth24Stencil8);
+            depthStencil = new Texture2D(width, height, Image.Format.Depth32F);
             light = new Texture2D(width, height, Image.Format.RGB16F);
 
             renderFrameBuffer.addColorTexture(worldPositionLinearDepth);

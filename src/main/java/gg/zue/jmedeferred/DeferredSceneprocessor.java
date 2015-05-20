@@ -22,6 +22,7 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.shader.VarType;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.TempVars;
 
 import java.util.ArrayList;
 
@@ -39,11 +40,13 @@ public class DeferredSceneprocessor implements SceneProcessor {
     private AssetManager assetManager;
     private Geometry resolveQuad;
     private Material resolveMaterial;
+    private Material debugMaterial;
 
     public DeferredSceneprocessor(AssetManager assetManager) {
         this.assetManager = assetManager;
         this.resolveQuad = new Geometry("FsQuad", new Quad(1, 1));
-        this.resolveMaterial = new Material(assetManager, "Materials/Deferred/DeferredTest.j3md");
+        this.resolveMaterial = new Material(assetManager, "Materials/Deferred/DeferredLogic.j3md");
+        this.debugMaterial = new Material(assetManager, "Materials/Deferred/Debug/DeferredDebug.j3md");
         this.resolveQuad.setMaterial(resolveMaterial);
     }
 
@@ -60,6 +63,7 @@ public class DeferredSceneprocessor implements SceneProcessor {
     public void reshape(ViewPort viewPort, int width, int height) {
         gBuffer.reshape(height, width);
         gBuffer.passGBufferToShader(resolveMaterial);
+        gBuffer.passGBufferToShader(debugMaterial);
     }
 
     @Override
@@ -75,23 +79,41 @@ public class DeferredSceneprocessor implements SceneProcessor {
     @Override
     public void postQueue(RenderQueue renderQueue) {
         outputFramebuffer = viewPort.getOutputFrameBuffer();
+
         renderDeferredPass();
         renderLightCalculationPass();
-        renderManager.getRenderer().setFrameBuffer(outputFramebuffer);
+        renderResolvePass();
 
+        cleanupAfterDeferredPass();
+        renderDebugScreen();
+    }
 
-        renderManager.setForcedMaterial(resolveMaterial);
-        renderManager.setForcedTechnique("DeferredTest");
+    private void renderDebugScreen() {
+        renderManager.setForcedMaterial(debugMaterial);
+        renderManager.setForcedTechnique("DeferredDebug");
         renderManager.renderGeometry(resolveQuad);
+        renderManager.setForcedMaterial(null);
+        renderManager.setForcedTechnique(null);
+    }
 
+    private void cleanupAfterDeferredPass() {
         renderManager.setForcedTechnique(null);
         renderManager.setForcedMaterial(null);
+        renderManager.setForcedRenderState(null);
+    }
+
+    private void renderResolvePass() {
+        renderManager.getRenderer().setFrameBuffer(outputFramebuffer);
+        renderManager.setForcedMaterial(resolveMaterial);
+        renderManager.setForcedTechnique("DeferredResolve");
+        renderManager.renderGeometry(resolveQuad);
     }
 
     private void renderLightCalculationPass() {
         ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
         ArrayList<PointLight> pointLights = new ArrayList<>();
         ColorRGBA ambientLight = new ColorRGBA(0, 0, 0, 0);
+        TempVars tempVars = TempVars.get();
         for (Spatial spatial : viewPort.getScenes()) {
             for (Light light : spatial.getWorldLightList()) {
                 if (light instanceof DirectionalLight) {
@@ -99,13 +121,14 @@ public class DeferredSceneprocessor implements SceneProcessor {
                 } else if (light instanceof AmbientLight) {
                     ambientLight.addLocal(light.getColor());
                 } else if (light instanceof PointLight) {
-                    pointLights.add((PointLight) light);
+                    if (light.intersectsFrustum(viewPort.getCamera(), tempVars)) {
+                        pointLights.add((PointLight) light);
+                    }
                 }
             }
         }
+        tempVars.release();
         renderManager.getRenderer().setFrameBuffer(gBuffer.getLightFrameBuffer());
-
-
         renderManager.getRenderer().setBackgroundColor(ambientLight);
         renderManager.getRenderer().clearBuffers(true, false, false);
         RenderState renderState = new RenderState();
@@ -139,18 +162,21 @@ public class DeferredSceneprocessor implements SceneProcessor {
             int[] pointLightId = new int[pointLights.size()];
             int count = 0;
             for (PointLight pointLight : pointLights) {
+
                 Vector3f position = pointLight.getPosition();
                 pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, pointLight.getRadius());
                 pointLightColors[count] = pointLight.getColor().toVector3f();
-                pointLightId[count]=count;
+                pointLightId[count] = count;
                 count++;
+
             }
+
             Mesh mesh = new Mesh();
             mesh.setBuffer(VertexBuffer.Type.Position, 4, BufferUtils.createFloatBuffer(pointLightPositionRadius));
             mesh.setBuffer(VertexBuffer.Type.Color, 3, BufferUtils.createFloatBuffer(pointLightColors));
             mesh.setBuffer(VertexBuffer.Type.Index, 1, BufferUtils.createIntBuffer(pointLightId));
             mesh.setMode(Mesh.Mode.Points);
-
+            renderState.setFaceCullMode(RenderState.FaceCullMode.Front);
             renderManager.setForcedMaterial(resolveMaterial);
             renderManager.setForcedTechnique("CalculatePointLights");
             Geometry geometry = new Geometry("PointLights", mesh);

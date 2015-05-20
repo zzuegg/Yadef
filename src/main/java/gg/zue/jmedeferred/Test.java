@@ -27,14 +27,14 @@ public class Test extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         flyCam.setMoveSpeed(100f);
-        cube = new Geometry("Cube", new Sphere(20, 20, 5));
+        cube = new Geometry("Cube", new Box(4,4,4));
         cam.setFrustumFar(10000);
 
         initDeferred();
         //initRegular();
 
         addAmbientLight();
-        //addDirectionalLights();
+        addDirectionalLights();
         addPointLights();
         //addSingleSphere();
         addSphereGrid();
@@ -84,7 +84,7 @@ public class Test extends SimpleApplication {
 
                     }
                 });*/
-                clone.setLocalTranslation(x * 12, 0, y * 12);
+                clone.setLocalTranslation(x * 12, FastMath.nextRandomFloat()*10, y * 12);
                 simpleBatchNode.attachChild(clone);
             }
         }
@@ -102,13 +102,8 @@ public class Test extends SimpleApplication {
     void addDirectionalLights() {
         DirectionalLight directionalLight = new DirectionalLight();
         directionalLight.setDirection(new Vector3f(-1, 0.5f, 0).normalize());
-        directionalLight.setColor(ColorRGBA.Red.mult(0.5f));
+        directionalLight.setColor(ColorRGBA.White.mult(0.5f));
         rootNode.addLight(directionalLight);
-
-        DirectionalLight directionalLight2 = new DirectionalLight();
-        directionalLight2.setDirection(new Vector3f(1, 0.5f, 0).normalize());
-        directionalLight2.setColor(ColorRGBA.Green.mult(0.5f));
-        rootNode.addLight(directionalLight2);
     }
 
     void initDeferred() {
@@ -117,12 +112,18 @@ public class Test extends SimpleApplication {
         }
 
         viewPort.addProcessor(new DeferredSceneprocessor(assetManager));
-
-        cube.setMaterial(new Material(assetManager, "Materials/Deferred/Default/Deferred.j3md"));
+        Material material = new Material(assetManager, "Materials/Deferred/Default/Deferred.j3md");
+        material.setTexture("diffuseTexture",assetManager.loadTexture("Textures/diffuse.jpg"));
+        material.setTexture("normalTexture",assetManager.loadTexture("Textures/normal.jpg"));
+        cube.setMaterial(material);
     }
 
     void initRegular() {
-        cube.setMaterial(new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md"));
+        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        material.setTexture("DiffuseMap",assetManager.loadTexture("Textures/diffuse.jpg"));
+        material.setTexture("NormalMap",assetManager.loadTexture("Textures/normal.jpg"));
+        cube.setMaterial(material);
+
         cube.getMaterial().setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 0.5f, 0f));
     }
 

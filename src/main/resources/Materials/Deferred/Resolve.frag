@@ -6,4 +6,5 @@ uniform sampler2D m_gbAlbedo;
 void main(){
 
     gl_FragColor=texture(m_gbLight,fragTexCoord)*texture(m_gbAlbedo,fragTexCoord);
+    //gl_FragColor=texture(m_gbWorldNormal,fragTexCoord);
 }

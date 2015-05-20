@@ -14,9 +14,9 @@ MaterialDef DeferredDebug {
         Vector3Array pointLightColors;
     }
 
-    Technique DeferredTest{
+    Technique DeferredResolve{
         VertexShader GLSL400: Materials/Deferred/FsQuad.vert
-        FragmentShader GLSL400: Materials/Deferred/Debug.frag
+        FragmentShader GLSL400: Materials/Deferred/Resolve.frag
     }
 
     Technique CalculateDirectionalLights{

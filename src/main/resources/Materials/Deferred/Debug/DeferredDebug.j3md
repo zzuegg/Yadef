@@ -1,0 +1,14 @@
+MaterialDef DeferredDebug {
+    MaterialParameters{
+        Texture2D gbWorldPosLinearDepth;
+        Texture2D gbWorldNormal;
+        Texture2D gbAlbedo;
+        Texture2D gbSpecular;
+        Texture2D gbLight;
+    }
+
+    Technique DeferredDebug{
+        VertexShader GLSL400: Materials/Deferred/FsQuad.vert
+        FragmentShader GLSL400: Materials/Deferred/Debug/Debug.frag
+    }
+}

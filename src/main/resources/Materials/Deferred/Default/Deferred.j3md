@@ -1,6 +1,7 @@
 MaterialDef Deferred {
     MaterialParameters{
-
+        Texture2D diffuseTexture;
+        Texture2D normalTexture;
     }
 
     Technique{
