@@ -37,8 +37,6 @@ public class DeferredSceneprocessor implements SceneProcessor {
     private GBuffer gBuffer;
     private boolean initialized = false;
 
-    private FrameBuffer outputFramebuffer;
-
     private AssetManager assetManager;
     private Geometry resolveQuad;
     private Material resolveMaterial;
@@ -103,20 +101,17 @@ public class DeferredSceneprocessor implements SceneProcessor {
 
     @Override
     public void postQueue(RenderQueue renderQueue) {
-        if (ms < System.currentTimeMillis()) {
-            ms = System.currentTimeMillis() + 5000;
-            enabled = !enabled;
-            System.out.println(enabled);
-        }
-        outputFramebuffer = viewPort.getOutputFrameBuffer();
-
         renderDeferredPass();
         renderLightCalculationPass();
         renderResolvePass();
 
         cleanupAfterDeferredPass();
+
+
+        renderLightDebug();
         renderDebugScreen();
     }
+
 
     private void renderDeferredPass() {
         renderManager.getRenderer().setFrameBuffer(gBuffer.getRenderFrameBuffer());
@@ -125,17 +120,21 @@ public class DeferredSceneprocessor implements SceneProcessor {
         RenderState renderState = new RenderState();
         renderState.setStencil(true, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Increment, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Increment, RenderState.TestFunction.Always, RenderState.TestFunction.Always);
         renderManager.setForcedRenderState(renderState);
-        renderManager.renderViewPortQueues(viewPort, true);
+        viewPort.getQueue().renderQueue(RenderQueue.Bucket.Opaque, renderManager, viewPort.getCamera(), true);
 
     }
 
 
     private void renderResolvePass() {
         RenderState renderState = new RenderState();
-        renderManager.getRenderer().setFrameBuffer(outputFramebuffer);
+        renderState.setDepthWrite(false);
+        renderManager.getRenderer().setFrameBuffer(null);
+        renderManager.setForcedRenderState(renderState);
         renderManager.setForcedMaterial(resolveMaterial);
         renderManager.setForcedTechnique("DeferredResolve");
         renderManager.renderGeometry(resolveQuad);
+        renderManager.setForcedRenderState(null);
+
     }
 
     private void cleanupAfterDeferredPass() {
@@ -149,6 +148,62 @@ public class DeferredSceneprocessor implements SceneProcessor {
         renderManager.setForcedMaterial(debugMaterial);
         renderManager.setForcedTechnique("DeferredDebug");
         renderManager.renderGeometry(resolveQuad);
+        renderManager.setForcedMaterial(null);
+        renderManager.setForcedTechnique(null);
+    }
+
+    private void renderLightDebug() {
+        ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
+        ArrayList<PointLight> pointLights = new ArrayList<>();
+        ColorRGBA ambientLight = new ColorRGBA(0, 0, 0, 0);
+        TempVars tempVars = TempVars.get();
+        for (Spatial spatial : viewPort.getScenes()) {
+            for (Light light : spatial.getWorldLightList()) {
+                if (light instanceof DirectionalLight) {
+                    directionalLights.add((DirectionalLight) light);
+                } else if (light instanceof AmbientLight) {
+                    ambientLight.addLocal(light.getColor());
+                } else if (light instanceof PointLight) {
+                    if (light.intersectsFrustum(viewPort.getCamera(), tempVars)) {
+                        pointLights.add((PointLight) light);
+                    }
+                }
+            }
+        }
+        tempVars.release();
+        if (pointLights.size() > 0) {
+            Vector4f[] pointLightPositionRadius = new Vector4f[pointLights.size()];
+            Vector3f[] pointLightColors = new Vector3f[pointLights.size()];
+            int[] pointLightId = new int[pointLights.size()];
+            int count = 0;
+            for (PointLight pointLight : pointLights) {
+
+                Vector3f position = pointLight.getPosition();
+                pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, 2);
+                pointLightColors[count] = pointLight.getColor().toVector3f();
+                pointLightId[count] = count;
+                count++;
+
+            }
+            RenderState renderState = new RenderState();
+            renderState.setWireframe(true);
+            //renderState.setDepthTest(false);
+            renderState.setDepthWrite(false);
+            renderManager.setForcedMaterial(resolveMaterial);
+            renderManager.setForcedTechnique("DebugPointLights");
+            renderManager.setForcedRenderState(renderState);
+            for (int i = 0; i < pointLightColors.length; ) {
+                int size = Math.min(500, pointLightColors.length - i);
+                Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
+                Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
+                i = i + size;
+                resolveMaterial.setParam("lightCount", VarType.Int, size - 1);
+                resolveMaterial.setParam("pointLightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);
+                resolveMaterial.setParam("pointLightColors", VarType.Vector3Array, pointLightColorsTmp);
+                renderManager.renderGeometry(pointLightPatch);
+            }
+        }
+        renderManager.setForcedRenderState(null);
         renderManager.setForcedMaterial(null);
         renderManager.setForcedTechnique(null);
     }
@@ -208,7 +263,6 @@ public class DeferredSceneprocessor implements SceneProcessor {
             int[] pointLightId = new int[pointLights.size()];
             int count = 0;
             for (PointLight pointLight : pointLights) {
-
                 Vector3f position = pointLight.getPosition();
                 pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, pointLight.getRadius());
                 pointLightColors[count] = pointLight.getColor().toVector3f();
@@ -233,8 +287,8 @@ public class DeferredSceneprocessor implements SceneProcessor {
                 renderManager.setForcedTechnique("CalculatePointLights");
                 for (int i = 0; i < pointLightColors.length; ) {
                     int size = Math.min(500, pointLightColors.length - i);
-                    Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i+size);
-                    Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i+size);
+                    Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
+                    Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
                     i = i + size;
                     resolveMaterial.setParam("lightCount", VarType.Int, size - 1);
                     resolveMaterial.setParam("pointLightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);

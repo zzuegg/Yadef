@@ -1,0 +1,20 @@
+MaterialDef DeferredDebug {
+    MaterialParameters{
+        Texture2D gbWorldPosLinearDepth;
+        Texture2D gbWorldNormal;
+        Texture2D gbAlbedo;
+        Texture2D gbSpecular;
+        Texture2D gbLight;
+        Texture2D gbOutput;
+    }
+
+    Technique GBufferResolve{
+        VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
+        FragmentShader GLSL400: Materials/yadef/DeferredLogic/Resolve/GBufferResolve.frag
+    }
+
+    Technique GBufferDebug{
+        VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
+        FragmentShader GLSL400: Materials/yadef/DeferredLogic/Resolve/GBufferDebug.frag
+    }
+}

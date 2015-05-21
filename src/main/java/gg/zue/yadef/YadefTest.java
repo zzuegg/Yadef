@@ -1,4 +1,4 @@
-package gg.zue.jmedeferred;
+package gg.zue.yadef;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
@@ -9,26 +9,23 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.post.SceneProcessor;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SimpleBatchNode;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
+import gg.zue.jmedeferred.DeferredSceneprocessor;
 
 
 /**
  * Created by MiZu on 19.05.2015.
  */
-public class Test extends SimpleApplication {
+public class YadefTest extends SimpleApplication {
     Geometry cube;
 
     @Override
     public void simpleInitApp() {
         flyCam.setMoveSpeed(100f);
-        cube = new Geometry("Cube", new Box(4,4,4));
+        cube = new Geometry("Cube", new Box(4, 4, 4));
         cam.setFrustumFar(10000);
 
         initDeferred();
@@ -47,11 +44,11 @@ public class Test extends SimpleApplication {
         clone.setMaterial(material);
         clone.setQueueBucket(RenderQueue.Bucket.Translucent);
         rootNode.attachChild(clone);
-        clone.move(0,20,0);
+        clone.move(0, 20, 0);
     }
 
     private void addPointLights() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10000; i++) {
             PointLight pointLight = new PointLight();
             pointLight.setColor(ColorRGBA.randomColor());
             pointLight.setRadius(40);
@@ -94,7 +91,7 @@ public class Test extends SimpleApplication {
 
                     }
                 });*/
-                clone.setLocalTranslation(x * 12, FastMath.nextRandomFloat()*10, y * 12);
+                clone.setLocalTranslation(x * 12, FastMath.nextRandomFloat() * 10, y * 12);
                 simpleBatchNode.attachChild(clone);
             }
         }
@@ -121,23 +118,23 @@ public class Test extends SimpleApplication {
             viewPort.removeProcessor(sceneProcessor);
         }
 
-        viewPort.addProcessor(new DeferredSceneprocessor(assetManager));
-        Material material = new Material(assetManager, "Materials/Deferred/Default/Deferred.j3md");
-        material.setTexture("diffuseTexture",assetManager.loadTexture("Textures/diffuse.jpg"));
-        material.setTexture("normalTexture",assetManager.loadTexture("Textures/normal.jpg"));
+        viewPort.addProcessor(new DeferredRenderer(this));
+        Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
+        material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));
+        material.setTexture("normalTexture", assetManager.loadTexture("Textures/normal.jpg"));
         cube.setMaterial(material);
     }
 
     void initRegular() {
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        material.setTexture("DiffuseMap",assetManager.loadTexture("Textures/diffuse.jpg"));
-        material.setTexture("NormalMap",assetManager.loadTexture("Textures/normal.jpg"));
+        material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
+        material.setTexture("NormalMap", assetManager.loadTexture("Textures/normal.jpg"));
         cube.setMaterial(material);
 
         cube.getMaterial().setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 0.5f, 0f));
     }
 
     public static void main(String[] args) {
-        new Test().start();
+        new YadefTest().start();
     }
 }

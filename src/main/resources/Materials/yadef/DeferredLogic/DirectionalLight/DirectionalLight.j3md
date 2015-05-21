@@ -1,0 +1,20 @@
+MaterialDef DeferredDebug {
+    MaterialParameters{
+        Texture2D gbWorldPosLinearDepth;
+        Texture2D gbWorldNormal;
+        Texture2D gbAlbedo;
+        Texture2D gbSpecular;
+        Texture2D gbLight;
+        Texture2D gbOutput;
+
+        Int lightCount;
+        Vector3Array lightDirections;
+        Vector3Array lightColors;
+    }
+    Technique CalculateDirectionalLights{
+        VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
+        FragmentShader GLSL400: Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLights.frag
+        WorldParameters {
+            NormalMatrix
+        }
+    }

@@ -5,8 +5,8 @@ MaterialDef Deferred {
     }
 
     Technique {
-        VertexShader GLSL400: Materials/Deferred/Default/Deferred.vert
-        FragmentShader GLSL400: Materials/Deferred/Default/Deferred.frag
+        VertexShader GLSL400: Materials/yadef/Deferred/Deferred.vert
+        FragmentShader GLSL400: Materials/yadef/Deferred/Deferred.frag
 
                 WorldParameters {
                     WorldMatrix

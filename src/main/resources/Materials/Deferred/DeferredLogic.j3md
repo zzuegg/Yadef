@@ -6,6 +6,7 @@ MaterialDef DeferredDebug {
         Texture2D gbSpecular;
         Texture2D gbLight;
 
+
         Int lightCount;
         Vector3Array directionalLightDirections;
         Vector3Array directionalLightColors;
@@ -50,4 +51,14 @@ MaterialDef DeferredDebug {
                 NormalMatrix
             }
         }
+
+    Technique DebugPointLights{
+        VertexShader GLSL400: Materials/Deferred/PointLights.vert
+        FragmentShader GLSL400: Materials/Deferred/PointLightsDebug.frag
+            WorldParameters {
+                WorldViewProjectionMatrix
+                Resolution
+                NormalMatrix
+            }
+    }
 }
