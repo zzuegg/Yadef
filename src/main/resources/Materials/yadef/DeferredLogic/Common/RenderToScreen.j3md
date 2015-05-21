@@ -1,4 +1,4 @@
-MaterialDef DeferredDebug {
+MaterialDef RenderToScreen {
     MaterialParameters{
         Texture2D gbWorldPosLinearDepth;
         Texture2D gbWorldNormal;
@@ -8,7 +8,7 @@ MaterialDef DeferredDebug {
         Texture2D gbOutput;
     }
 
-    Technique RenderToScreen{
+    Technique{
         VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
         FragmentShader GLSL400: Materials/yadef/DeferredLogic/Common/RenderToScreen.frag
     }

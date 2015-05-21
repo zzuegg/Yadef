@@ -14,14 +14,14 @@ import gg.zue.yadef.GBuffer;
 /**
  * Created by MiZu on 21.05.2015.
  */
-public class RenderToScreenPass {
+public class PostDeferredManager {
     AssetManager assetManager;
     private RenderState renderState;
     private Geometry fsQuad;
     private Material resolveGBufferMaterial;
     private Material renderToScreenMaterial;
 
-    public RenderToScreenPass(AssetManager assetManager) {
+    public PostDeferredManager(AssetManager assetManager) {
         this.assetManager = assetManager;
         this.fsQuad = new Geometry("FsQuad", new Quad(1, 1));
         this.resolveGBufferMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/Resolve/GBufferResolve.j3md");
@@ -40,8 +40,8 @@ public class RenderToScreenPass {
 
         renderManager.setForcedRenderState(renderState);
         renderManager.setForcedMaterial(resolveGBufferMaterial);
-        renderManager.setForcedTechnique("GBufferResolve");
-
+        renderManager.setForcedTechnique(null);
+        fsQuad.setMaterial(resolveGBufferMaterial);
         renderManager.renderGeometry(fsQuad);
 
         renderManager.setForcedRenderState(null);
@@ -49,11 +49,20 @@ public class RenderToScreenPass {
         renderManager.setForcedTechnique(null);
     }
 
-    public void finalizeFrame(GBuffer gBuffer, RenderManager renderManager) {
+    public void renderSkyQueue(RenderManager renderManager, ViewPort viewPort, RenderQueue renderQueue) {
+        renderQueue.renderQueue(RenderQueue.Bucket.Sky, renderManager, viewPort.getCamera(), true);
+    }
+
+    public void renderTranslucentQueue(RenderManager renderManager, ViewPort viewPort, RenderQueue renderQueue) {
+        renderQueue.renderQueue(RenderQueue.Bucket.Translucent, renderManager, viewPort.getCamera(), true);
+    }
+
+    public void drawFrameOnScreen(GBuffer gBuffer, RenderManager renderManager) {
+        renderManager.getRenderer().setFrameBuffer(null);
         gBuffer.passGBufferToShader(renderToScreenMaterial);
         renderManager.setForcedMaterial(renderToScreenMaterial);
-        renderManager.setForcedTechnique("RenderToScreen");
-
+        renderManager.setForcedTechnique(null);
+        fsQuad.setMaterial(renderToScreenMaterial);
         renderManager.renderGeometry(fsQuad);
         renderManager.setForcedRenderState(null);
         renderManager.setForcedMaterial(null);
@@ -65,6 +74,7 @@ public class RenderToScreenPass {
         renderManager.setForcedMaterial(resolveGBufferMaterial);
         renderManager.setForcedTechnique("GBufferDebug");
         //renderManager.setForcedRenderState(renderState);
+        fsQuad.setMaterial(resolveGBufferMaterial);
         renderManager.renderGeometry(fsQuad);
 
         renderManager.setForcedRenderState(null);

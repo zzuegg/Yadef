@@ -6,7 +6,6 @@ import com.jme3.material.RenderState;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.util.TempVars;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.lighttechniques.DefaultAmbientLightTechnique;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by MiZu on 21.05.2015.
  */
-public class LightCalculationPass {
+public class LightManager {
     AssetManager assetManager;
     RenderState renderState;
 
@@ -34,7 +33,7 @@ public class LightCalculationPass {
     LightTechnique<PointLight> pointLightLightTechnique;
     LightTechnique<SpotLight> spotLightLightTechnique;
 
-    public LightCalculationPass() {
+    public LightManager() {
         this.renderState = new RenderState();
         this.renderState.setStencil(true, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.TestFunction.Less, RenderState.TestFunction.Less);
         this.renderState.setBlendMode(RenderState.BlendMode.Additive);
@@ -42,7 +41,7 @@ public class LightCalculationPass {
         this.renderState.setDepthWrite(false);
     }
 
-    public LightCalculationPass(AssetManager assetManager) {
+    public LightManager(AssetManager assetManager) {
         this();
         this.assetManager = assetManager;
         ambientLightLightTechnique = new DefaultAmbientLightTechnique();

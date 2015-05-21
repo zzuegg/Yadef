@@ -7,9 +7,9 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.texture.FrameBuffer;
-import gg.zue.yadef.renderpasses.GBufferPass;
-import gg.zue.yadef.renderpasses.LightCalculationPass;
-import gg.zue.yadef.renderpasses.RenderToScreenPass;
+import gg.zue.yadef.renderpasses.DeferredRenderManager;
+import gg.zue.yadef.renderpasses.LightManager;
+import gg.zue.yadef.renderpasses.PostDeferredManager;
 
 /**
  * Created by MiZu on 21.05.2015.
@@ -22,18 +22,18 @@ public class DeferredRenderer implements SceneProcessor {
     RenderManager renderManager;
     ViewPort viewPort;
 
-    GBufferPass GBufferPass;
-    LightCalculationPass lightCalculationPass;
-    RenderToScreenPass renderToScreenPass;
+    DeferredRenderManager DeferredRenderManager;
+    LightManager lightManager;
+    PostDeferredManager postDeferredManager;
 
     public DeferredRenderer(Application application) {
         this.application = application;
         this.assetManager = application.getAssetManager();
         this.gBuffer = new GBuffer();
 
-        this.GBufferPass = new GBufferPass();
-        this.lightCalculationPass = new LightCalculationPass(assetManager);
-        this.renderToScreenPass = new RenderToScreenPass(assetManager);
+        this.DeferredRenderManager = new DeferredRenderManager();
+        this.lightManager = new LightManager(assetManager);
+        this.postDeferredManager = new PostDeferredManager(assetManager);
     }
 
     @Override
@@ -61,19 +61,19 @@ public class DeferredRenderer implements SceneProcessor {
 
     @Override
     public void postQueue(RenderQueue renderQueue) {
-        GBufferPass.render(gBuffer, renderManager, viewPort, renderQueue);
-        lightCalculationPass.render(gBuffer, renderManager, viewPort);
+        DeferredRenderManager.renderOpaqueQueue(gBuffer, renderManager, viewPort, renderQueue);
+        lightManager.render(gBuffer, renderManager, viewPort);
 
-        renderToScreenPass.render(gBuffer, renderManager, viewPort, renderQueue);
-        renderQueue.renderQueue(RenderQueue.Bucket.Sky, renderManager, viewPort.getCamera());
-        renderQueue.renderQueue(RenderQueue.Bucket.Translucent, renderManager, viewPort.getCamera());
+        postDeferredManager.render(gBuffer, renderManager, viewPort, renderQueue);
+        postDeferredManager.renderSkyQueue(renderManager, viewPort, renderQueue);
+        postDeferredManager.renderTranslucentQueue(renderManager, viewPort, renderQueue);
+
+        postDeferredManager.renderDebug(gBuffer, renderManager);
+        lightManager.renderDebug(gBuffer, renderManager);
 
 
-        renderToScreenPass.renderDebug(gBuffer, renderManager);
-        lightCalculationPass.renderDebug(gBuffer, renderManager);
-        renderManager.getRenderer().setFrameBuffer(null);
 
-        renderToScreenPass.finalizeFrame(gBuffer, renderManager);
+        postDeferredManager.drawFrameOnScreen(gBuffer, renderManager);
     }
 
 

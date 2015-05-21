@@ -11,7 +11,7 @@ MaterialDef DeferredDebug {
         Vector3Array lightDirections;
         Vector3Array lightColors;
     }
-    Technique CalculateDirectionalLights{
+    Technique {
         VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
         FragmentShader GLSL400: Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLights.frag
         WorldParameters {

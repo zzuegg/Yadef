@@ -10,15 +10,15 @@ import gg.zue.yadef.GBuffer;
 /**
  * Created by MiZu on 21.05.2015.
  */
-public class GBufferPass {
+public class DeferredRenderManager {
     private RenderState deferredRenderState;
 
-    public GBufferPass() {
+    public DeferredRenderManager() {
         deferredRenderState = new RenderState();
         deferredRenderState.setStencil(true, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Increment, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Increment, RenderState.TestFunction.Always, RenderState.TestFunction.Always);
     }
 
-    public void render(GBuffer gBuffer, RenderManager renderManager, ViewPort viewPort, RenderQueue renderQueue) {
+    public void renderOpaqueQueue(GBuffer gBuffer, RenderManager renderManager, ViewPort viewPort, RenderQueue renderQueue) {
         renderManager.getRenderer().setFrameBuffer(gBuffer.getDeferredFrameBuffer());
         renderManager.getRenderer().clearBuffers(true, true, true);
         renderManager.setForcedRenderState(deferredRenderState);

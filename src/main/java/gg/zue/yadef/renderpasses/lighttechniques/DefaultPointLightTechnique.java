@@ -52,7 +52,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
 
             }
             renderManager.setForcedMaterial(pointLightMaterial);
-            renderManager.setForcedTechnique("CalculatePointLights");
+            renderManager.setForcedTechnique(null);
             for (int i = 0; i < pointLightColors.length; ) {
                 int size = Math.min(500, pointLightColors.length - i);
                 Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
@@ -61,6 +61,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
                 pointLightMaterial.setParam("lightCount", VarType.Int, size - 1);
                 pointLightMaterial.setParam("lightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);
                 pointLightMaterial.setParam("lightColors", VarType.Vector3Array, pointLightColorsTmp);
+                pointLightGeometry.setMaterial(pointLightMaterial);
                 renderManager.renderGeometry(pointLightGeometry);
             }
         }

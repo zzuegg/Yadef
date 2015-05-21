@@ -11,7 +11,7 @@ MaterialDef PointLight {
         Vector4Array lightPositionRadius;
         Vector3Array lightColors;
     }
-    Technique CalculatePointLights{
+    Technique{
         VertexShader GLSL400:   Materials/yadef/DeferredLogic/PointLight/PointLights.vert
         FragmentShader GLSL400: Materials/yadef/DeferredLogic/PointLight/PointLightsLighting.frag
 
