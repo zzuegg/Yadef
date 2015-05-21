@@ -1,0 +1,31 @@
+MaterialDef PointLight {
+    MaterialParameters{
+        Texture2D gbWorldPosLinearDepth;
+        Texture2D gbWorldNormal;
+        Texture2D gbAlbedo;
+        Texture2D gbSpecular;
+        Texture2D gbLight;
+        Texture2D gbOutput;
+
+        Vector3 spotLightPosition;
+        Vector4 spotLightDirectionRange;
+    }
+    Technique{
+        VertexShader GLSL150:   Materials/yadef/DeferredLogic/SpotLight/SpotLights.vert
+        FragmentShader GLSL150: Materials/yadef/DeferredLogic/SpotLight/SpotLightsLighting.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            Resolution
+            NormalMatrix
+        }
+    }
+    Technique DebugSpotLights{
+            VertexShader GLSL150:   Materials/yadef/DeferredLogic/SpotLight/SpotLights.vert
+            FragmentShader GLSL150: Materials/yadef/DeferredLogic/SpotLight/SpotLightsDebug.frag
+
+            WorldParameters {
+                WorldViewProjectionMatrix
+            }
+    }
+}

@@ -12,8 +12,8 @@ MaterialDef PointLight {
         Vector3Array lightColors;
     }
     Technique{
-        VertexShader GLSL400:   Materials/yadef/DeferredLogic/PointLight/PointLights.vert
-        FragmentShader GLSL400: Materials/yadef/DeferredLogic/PointLight/PointLightsLighting.frag
+        VertexShader GLSL150:   Materials/yadef/DeferredLogic/PointLight/PointLights.vert
+        FragmentShader GLSL150: Materials/yadef/DeferredLogic/PointLight/PointLightsLighting.frag
 
         WorldParameters {
             WorldViewProjectionMatrix
@@ -22,8 +22,8 @@ MaterialDef PointLight {
         }
     }
     Technique DebugPointLights{
-            VertexShader GLSL400:   Materials/yadef/DeferredLogic/PointLight/PointLights.vert
-            FragmentShader GLSL400: Materials/yadef/DeferredLogic/PointLight/PointLightsDebug.frag
+            VertexShader GLSL150:   Materials/yadef/DeferredLogic/PointLight/PointLights.vert
+            FragmentShader GLSL150: Materials/yadef/DeferredLogic/PointLight/PointLightsDebug.frag
 
             WorldParameters {
                 WorldViewProjectionMatrix

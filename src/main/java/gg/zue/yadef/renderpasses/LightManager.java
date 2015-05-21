@@ -11,6 +11,7 @@ import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.lighttechniques.DefaultAmbientLightTechnique;
 import gg.zue.yadef.renderpasses.lighttechniques.DefaultDirectionalLightTechnique;
 import gg.zue.yadef.renderpasses.lighttechniques.DefaultPointLightTechnique;
+import gg.zue.yadef.renderpasses.lighttechniques.DefaultSpotLightTechnique;
 
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class LightManager {
         ambientLightLightTechnique = new DefaultAmbientLightTechnique();
         directionalLightLightTechnique = new DefaultDirectionalLightTechnique(assetManager);
         pointLightLightTechnique = new DefaultPointLightTechnique(assetManager);
+        spotLightLightTechnique = new DefaultSpotLightTechnique(assetManager);
     }
 
 
@@ -74,6 +76,7 @@ public class LightManager {
         pointLightLightTechnique.render(gBuffer, renderManager, pointLights);
 
         //Spot lights
+        spotLightLightTechnique.render(gBuffer, renderManager, spotLights);
         //todo:
 
 
@@ -84,6 +87,7 @@ public class LightManager {
 
     public void renderDebug(GBuffer gBuffer, RenderManager renderManager) {
         pointLightLightTechnique.renderDebug(gBuffer, renderManager, pointLights);
+        spotLightLightTechnique.renderDebug(gBuffer, renderManager, spotLights);
     }
 
     private void getVisibleLights(ArrayList<AmbientLight> ambientLights, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, ArrayList<DirectionalLight> directionalLights, LightList lightlist, Camera camera) {
@@ -94,14 +98,14 @@ public class LightManager {
                     directionalLights.add((DirectionalLight) light);
                     break;
                 case Point:
-                    if (light.intersectsFrustum(camera, tempVars)) {
+                    //if (light.intersectsFrustum(camera, tempVars)) {
                         pointLights.add((PointLight) light);
-                    }
+                    //}
                     break;
                 case Spot:
-                    if (light.intersectsFrustum(camera, tempVars)) {
+                    //if (light.intersectsFrustum(camera, tempVars)) {
                         spotLights.add((SpotLight) light);
-                    }
+                    //}
                     break;
                 case Ambient:
                     ambientLights.add((AmbientLight) light);

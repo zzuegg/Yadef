@@ -9,7 +9,7 @@ MaterialDef RenderToScreen {
     }
 
     Technique{
-        VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
-        FragmentShader GLSL400: Materials/yadef/DeferredLogic/Common/RenderToScreen.frag
+        VertexShader GLSL150: Materials/yadef/DeferredLogic/Common/FsQuad.vert
+        FragmentShader GLSL150: Materials/yadef/DeferredLogic/Common/RenderToScreen.frag
     }
 }

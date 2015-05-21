@@ -1,3 +1,5 @@
+#extension GL_ARB_separate_shader_objects : enable
+
 in vec3 normal;
 in vec3 binormal;
 in vec3 tangent;

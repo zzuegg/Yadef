@@ -9,12 +9,12 @@ MaterialDef GBufferResolve {
     }
 
     Technique{
-        VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
-        FragmentShader GLSL400: Materials/yadef/DeferredLogic/Resolve/GBufferResolve.frag
+        VertexShader GLSL150: Materials/yadef/DeferredLogic/Common/FsQuad.vert
+        FragmentShader GLSL150: Materials/yadef/DeferredLogic/Resolve/GBufferResolve.frag
     }
 
     Technique GBufferDebug{
-        VertexShader GLSL400: Materials/yadef/DeferredLogic/Common/FsQuad.vert
-        FragmentShader GLSL400: Materials/yadef/DeferredLogic/Resolve/GBufferDebug.frag
+        VertexShader GLSL150: Materials/yadef/DeferredLogic/Common/FsQuad.vert
+        FragmentShader GLSL150: Materials/yadef/DeferredLogic/Resolve/GBufferDebug.frag
     }
 }
