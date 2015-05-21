@@ -15,7 +15,6 @@ import com.jme3.scene.SimpleBatchNode;
 import com.jme3.scene.shape.Box;
 
 
-
 /**
  * Created by MiZu on 19.05.2015.
  */
@@ -48,10 +47,10 @@ public class YadefTest extends SimpleApplication {
     }
 
     private void addPointLights() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10000; i++) {
             PointLight pointLight = new PointLight();
-            pointLight.setColor(ColorRGBA.randomColor());
-            pointLight.setRadius(40);
+            pointLight.setColor(ColorRGBA.randomColor().mult(2));
+            pointLight.setRadius(FastMath.nextRandomFloat() * 30);
             pointLight.setPosition(new Vector3f(FastMath.nextRandomFloat() * 12 * 20, 10, FastMath.nextRandomFloat() * 12 * 20));
             rootNode.addLight(pointLight);
         }

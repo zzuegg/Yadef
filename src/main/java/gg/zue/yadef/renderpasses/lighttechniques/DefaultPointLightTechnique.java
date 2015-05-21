@@ -81,7 +81,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
             int count = 0;
             for (PointLight pointLight : lightList) {
                 Vector3f position = pointLight.getPosition();
-                pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, 2);
+                pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, 1);
                 pointLightColors[count] = pointLight.getColor().toVector3f();
                 pointLightId[count] = count;
                 count++;
