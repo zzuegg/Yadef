@@ -1,5 +1,3 @@
-package gg.zue.yadef;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -13,6 +11,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SimpleBatchNode;
 import com.jme3.scene.shape.Box;
+import gg.zue.yadef.DeferredRenderer;
 
 
 /**
