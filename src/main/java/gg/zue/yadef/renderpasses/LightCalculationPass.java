@@ -2,27 +2,20 @@ package gg.zue.yadef.renderpasses;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.light.*;
-import com.jme3.material.Material;
 import com.jme3.material.RenderState;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.shader.VarType;
 import com.jme3.util.TempVars;
 import gg.zue.yadef.GBuffer;
-import jme3tools.optimize.GeometryBatchFactory;
+import gg.zue.yadef.renderpasses.lighttechniques.DefaultAmbientLightTechnique;
+import gg.zue.yadef.renderpasses.lighttechniques.DefaultDirectionalLightTechnique;
+import gg.zue.yadef.renderpasses.lighttechniques.DefaultPointLightTechnique;
+
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+
 
 /**
  * Created by MiZu on 21.05.2015.
@@ -30,18 +23,18 @@ import java.util.Collection;
 public class LightCalculationPass {
     AssetManager assetManager;
     RenderState renderState;
-    Material directionalLightMaterial, pointLightMaterial;
-    private Geometry fsQuad, pointLightGeometry;
 
-    public LightCalculationPass(AssetManager assetManager) {
-        this.assetManager = assetManager;
+    ArrayList<AmbientLight> ambientLights = new ArrayList<>();
+    ArrayList<PointLight> pointLights = new ArrayList<>();
+    ArrayList<SpotLight> spotLights = new ArrayList<>();
+    ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
 
-        this.fsQuad = new Geometry("FsQuad", new Quad(1, 1));
-        this.pointLightGeometry = generatePointLightMesh();
+    LightTechnique<AmbientLight> ambientLightLightTechnique;
+    LightTechnique<DirectionalLight> directionalLightLightTechnique;
+    LightTechnique<PointLight> pointLightLightTechnique;
+    LightTechnique<SpotLight> spotLightLightTechnique;
 
-        this.directionalLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLight.j3md");
-        this.pointLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/PointLight/PointLight.j3md");
-
+    public LightCalculationPass() {
         this.renderState = new RenderState();
         this.renderState.setStencil(true, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.TestFunction.Less, RenderState.TestFunction.Less);
         this.renderState.setBlendMode(RenderState.BlendMode.Additive);
@@ -49,76 +42,37 @@ public class LightCalculationPass {
         this.renderState.setDepthWrite(false);
     }
 
+    public LightCalculationPass(AssetManager assetManager) {
+        this();
+        this.assetManager = assetManager;
+        ambientLightLightTechnique = new DefaultAmbientLightTechnique();
+        directionalLightLightTechnique = new DefaultDirectionalLightTechnique(assetManager);
+        pointLightLightTechnique = new DefaultPointLightTechnique(assetManager);
+    }
 
-    public void render(GBuffer gBuffer, RenderManager renderManager, ViewPort viewPort, RenderQueue renderQueue) {
-        gBuffer.passGBufferToShader(directionalLightMaterial);
-        gBuffer.passGBufferToShader(pointLightMaterial);
+
+    public void render(GBuffer gBuffer, RenderManager renderManager, ViewPort viewPort) {
+
+
         renderManager.setForcedRenderState(renderState);
-
-        ArrayList<AmbientLight> ambientLights = new ArrayList<>();
-        ArrayList<PointLight> pointLights = new ArrayList<>();
-        ArrayList<SpotLight> spotLights = new ArrayList<>();
-        ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
-        getVisibleLights(ambientLights, pointLights, spotLights, directionalLights, viewPort.getScenes().get(0).getWorldLightList(), viewPort.getCamera());
-
         renderManager.getRenderer().setFrameBuffer(gBuffer.getLightFrameBuffer());
+        //todo: there is probably a better way
+        ambientLights.clear();
+        pointLights.clear();
+        spotLights.clear();
+        directionalLights.clear();
+        getVisibleLights(ambientLights, pointLights, spotLights, directionalLights, viewPort.getScenes().get(0).getWorldLightList(), viewPort.getCamera());
+        //todo: until here
+
 
         //Ambient Light
-        ColorRGBA ambientColor = new ColorRGBA(0, 0, 0, 0);
-        ambientLights.forEach(ambientLight -> ambientColor.addLocal(ambientLight.getColor()));
-        renderManager.getRenderer().setFrameBuffer(gBuffer.getLightFrameBuffer());
-        renderManager.getRenderer().setBackgroundColor(ambientColor);
-        renderManager.getRenderer().clearBuffers(true, false, false);
+        ambientLightLightTechnique.render(gBuffer, renderManager, ambientLights);
 
         //Directional Light
-        if (directionalLights.size() > 0) {
-            Vector3f[] dlDirection = new Vector3f[directionalLights.size()];
-            Vector3f[] dlColor = new Vector3f[directionalLights.size()];
-            int count = 0;
-            for (DirectionalLight directionalLight : directionalLights) {
-                dlDirection[count] = directionalLight.getDirection();
-                dlColor[count] = directionalLight.getColor().toVector3f();
-                count++;
-            }
-
-            directionalLightMaterial.setParam("lightCount", VarType.Int, directionalLights.size());
-            directionalLightMaterial.setParam("lightDirections", VarType.Vector3Array, dlDirection);
-            directionalLightMaterial.setParam("lightColors", VarType.Vector3Array, dlColor);
-            renderManager.setForcedMaterial(directionalLightMaterial);
-            renderManager.setForcedTechnique("CalculateDirectionalLights");
-            renderManager.renderGeometry(fsQuad);
-        }
-
+        directionalLightLightTechnique.render(gBuffer, renderManager, directionalLights);
 
         //Point Light
-        renderState.setFaceCullMode(RenderState.FaceCullMode.Front);
-        if (pointLights.size() > 0) {
-            Vector4f[] pointLightPositionRadius = new Vector4f[pointLights.size()];
-            Vector3f[] pointLightColors = new Vector3f[pointLights.size()];
-            int[] pointLightId = new int[pointLights.size()];
-            int count = 0;
-            for (PointLight pointLight : pointLights) {
-                Vector3f position = pointLight.getPosition();
-                pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, pointLight.getRadius());
-                pointLightColors[count] = pointLight.getColor().toVector3f();
-                pointLightId[count] = count;
-                count++;
-
-            }
-            renderManager.setForcedMaterial(pointLightMaterial);
-            renderManager.setForcedTechnique("CalculatePointLights");
-            for (int i = 0; i < pointLightColors.length; ) {
-                int size = Math.min(500, pointLightColors.length - i);
-                Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
-                Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
-                i = i + size;
-                pointLightMaterial.setParam("lightCount", VarType.Int, size - 1);
-                pointLightMaterial.setParam("lightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);
-                pointLightMaterial.setParam("lightColors", VarType.Vector3Array, pointLightColorsTmp);
-                renderManager.renderGeometry(pointLightGeometry);
-            }
-        }
-        renderState.setFaceCullMode(RenderState.FaceCullMode.Back);
+        pointLightLightTechnique.render(gBuffer, renderManager, pointLights);
 
         //Spot lights
         //todo:
@@ -129,17 +83,8 @@ public class LightCalculationPass {
         renderManager.setForcedMaterial(null);
     }
 
-    private Geometry generatePointLightMesh() {
-        Mesh pointLightMesh = new Mesh();
-        Geometry geometry = new Geometry("PointLight", new Sphere(6, 6, 1));
-        System.out.println(geometry.getMesh().getTriangleCount());
-        Collection<Geometry> plGeo = new ArrayList<>();
-        for (int i = 0; i < 500; i++) {
-            plGeo.add(geometry.clone());
-        }
-        GeometryBatchFactory.mergeGeometries(plGeo, pointLightMesh);
-        Geometry pointLightPatch = new Geometry("PointLights", pointLightMesh);
-        return pointLightPatch;
+    public void renderDebug(GBuffer gBuffer, RenderManager renderManager) {
+        pointLightLightTechnique.renderDebug(gBuffer, renderManager, pointLights);
     }
 
     private void getVisibleLights(ArrayList<AmbientLight> ambientLights, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, ArrayList<DirectionalLight> directionalLights, LightList lightlist, Camera camera) {

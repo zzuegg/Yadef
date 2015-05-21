@@ -64,7 +64,7 @@ public class RenderToScreenPass {
         gBuffer.passGBufferToShader(resolveGBufferMaterial);
         renderManager.setForcedMaterial(resolveGBufferMaterial);
         renderManager.setForcedTechnique("GBufferDebug");
-
+        //renderManager.setForcedRenderState(renderState);
         renderManager.renderGeometry(fsQuad);
 
         renderManager.setForcedRenderState(null);

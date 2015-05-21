@@ -38,7 +38,7 @@ public class GBuffer {
             worldNormal = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
             albedo = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
             specular = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
-            depthStencil = applyFilters(new Texture2D(width, height, Image.Format.Depth24Stencil8));
+            depthStencil = new Texture2D(width, height, Image.Format.Depth24Stencil8);
             light = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
             outputTexture = applyFilters(new Texture2D(width, height, Image.Format.RGBA16F));
 

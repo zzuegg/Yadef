@@ -62,7 +62,7 @@ public class DeferredRenderer implements SceneProcessor {
     @Override
     public void postQueue(RenderQueue renderQueue) {
         GBufferPass.render(gBuffer, renderManager, viewPort, renderQueue);
-        lightCalculationPass.render(gBuffer, renderManager, viewPort, renderQueue);
+        lightCalculationPass.render(gBuffer, renderManager, viewPort);
 
         renderToScreenPass.render(gBuffer, renderManager, viewPort, renderQueue);
         renderQueue.renderQueue(RenderQueue.Bucket.Sky, renderManager, viewPort.getCamera());
@@ -70,7 +70,7 @@ public class DeferredRenderer implements SceneProcessor {
 
 
         renderToScreenPass.renderDebug(gBuffer, renderManager);
-
+        lightCalculationPass.renderDebug(gBuffer, renderManager);
         renderManager.getRenderer().setFrameBuffer(null);
 
         renderToScreenPass.finalizeFrame(gBuffer, renderManager);

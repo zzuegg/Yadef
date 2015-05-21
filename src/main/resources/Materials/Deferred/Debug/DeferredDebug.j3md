@@ -8,7 +8,7 @@ MaterialDef DeferredDebug {
     }
 
     Technique DeferredDebug{
-        VertexShader GLSL400: Materials/Deferred/Debug/Debug.vert
+        VertexShader GLSL400: Materials/Deferred/FsQuad.vert
         FragmentShader GLSL400: Materials/Deferred/Debug/Debug.frag
     }
 }
