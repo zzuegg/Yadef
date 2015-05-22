@@ -31,9 +31,9 @@ public class YadefTest extends SimpleApplication {
         //initRegular();
 
         addAmbientLight();
-        addDirectionalLights();
-        addPointLights(100);
-        //addSpotLights(20);
+        //addDirectionalLights();
+        //addPointLights(100);
+        addSpotLights(20);
         addSphereGrid();
 
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
@@ -50,8 +50,11 @@ public class YadefTest extends SimpleApplication {
         for (int i = 0; i < count; i++) {
             SpotLight pointLight = new SpotLight();
             pointLight.setColor(ColorRGBA.randomColor().mult(2));
-            pointLight.setDirection(Vector3f.UNIT_Y.negate().add(FastMath.nextRandomFloat(), FastMath.nextRandomFloat(), FastMath.nextRandomFloat()).normalize());
-            pointLight.setPosition(new Vector3f(FastMath.nextRandomFloat() * 12 * 20, 10, FastMath.nextRandomFloat() * 12 * 20));
+            pointLight.setDirection(new Vector3f(FastMath.nextRandomFloat() * -1, FastMath.nextRandomFloat() * -1, FastMath.nextRandomFloat() * -1).normalize());
+            pointLight.setPosition(new Vector3f(FastMath.nextRandomFloat() * 12 * 20, 50, FastMath.nextRandomFloat() * 12 * 20));
+            float v = FastMath.nextRandomFloat() * 20;
+            pointLight.setSpotOuterAngle(v * FastMath.DEG_TO_RAD);
+            pointLight.setSpotInnerAngle(Math.max(v - 4, 0) * FastMath.DEG_TO_RAD);
             rootNode.addLight(pointLight);
         }
     }

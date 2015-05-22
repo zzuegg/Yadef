@@ -18,7 +18,7 @@ public class DeferredRenderer implements SceneProcessor {
     Application application;
     AssetManager assetManager;
     GBuffer gBuffer;
-    boolean initialized;
+    boolean initialized = false;
     RenderManager renderManager;
     ViewPort viewPort;
 
@@ -41,12 +41,15 @@ public class DeferredRenderer implements SceneProcessor {
         reshape(viewPort, viewPort.getCamera().getWidth(), viewPort.getCamera().getHeight());
         this.renderManager = renderManager;
         this.viewPort = viewPort;
-        initialized = true;
     }
 
     @Override
     public void reshape(ViewPort viewPort, int width, int height) {
-        this.gBuffer.reshape(height, width);
+        if (width != 0 && height != 0) {
+            this.gBuffer.reshape(height, width);
+            initialized = true;
+            System.out.println(width + " : " + height);
+        }
     }
 
     @Override
@@ -70,7 +73,6 @@ public class DeferredRenderer implements SceneProcessor {
 
         postDeferredManager.renderDebug(gBuffer, renderManager);
         lightManager.renderDebug(gBuffer, renderManager);
-
 
 
         postDeferredManager.drawFrameOnScreen(gBuffer, renderManager);

@@ -1,20 +1,28 @@
 uniform mat4 g_WorldViewProjectionMatrix;
 
-in vec3 inPosition;
+out vec4 lightColorInnerAngle;
+out vec4 lightPositionOuterAngle;
+out vec4 lightDirectionRange;
 
-out vec3 lightColor;
-
-uniform vec3 m_spotLightPosition;
+uniform vec4 m_spotLightPositionAngle;
 uniform vec4 m_spotLightDirectionRange;
+uniform vec4 m_spotLightColorInnerAngle;
 
-const int vertCount=30;
-
+const float offsetMod[5]=float[5](0,1,1,1,1);
+const vec3 upMod[5]=vec3[5](    vec3(0),vec3(1),vec3(1),vec3(-1),vec3(-1));
+const vec3 leftMod[5]=vec3[5](  vec3(0),vec3(1),vec3(-1),vec3(-1),vec3(1));
 void main(){
-    //vec3 position=m_spotLightPosition+(m_spotLightDirectionRange.xyz*vec3(mix(0,m_spotLightDirectionRange.a,inPosition.z-1)));
-    vec3 position=vec3(inPosition.x,inPosition.y,inPosition.z);
-    lightColor=vec3(position.y,position.y,position.y);
-    float factor=position.y;
-    vec3 xyOffset=cross(m_spotLightDirectionRange.xyz*-1,vec3(inPosition.x,0,inPosition.y));
-    position=m_spotLightPosition+(xyOffset*m_spotLightDirectionRange.xyz*position.y*m_spotLightDirectionRange.a);
-    gl_Position=g_WorldViewProjectionMatrix*vec4(position,1);
+    int vertexId=gl_VertexID;
+    lightColorInnerAngle=m_spotLightColorInnerAngle;
+    lightPositionOuterAngle=m_spotLightPositionAngle;
+    lightDirectionRange=m_spotLightDirectionRange;
+    vec3 left=normalize(cross(m_spotLightDirectionRange.xyz,vec3(0,1,0)));
+    vec3 up=cross(left,m_spotLightDirectionRange.xyz);
+
+    vec3 mod=(left*leftMod[vertexId])+(up*upMod[vertexId]);
+    vec3 origin=m_spotLightPositionAngle.xyz;
+    vec3 centerPoint=origin+offsetMod[vertexId]*m_spotLightDirectionRange.xyz*m_spotLightDirectionRange.a;
+    float range=m_spotLightDirectionRange.a;
+    float sine=sin(m_spotLightPositionAngle.a);
+    gl_Position=g_WorldViewProjectionMatrix*vec4(centerPoint+mod*sine*range,1);
 }

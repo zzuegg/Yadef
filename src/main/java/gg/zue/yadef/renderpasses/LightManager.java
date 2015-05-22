@@ -93,23 +93,22 @@ public class LightManager {
     private void getVisibleLights(ArrayList<AmbientLight> ambientLights, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, ArrayList<DirectionalLight> directionalLights, LightList lightlist, Camera camera) {
         TempVars tempVars = TempVars.get();
         for (Light light : lightlist) {
-            switch (light.getType()) {
-                case Directional:
-                    directionalLights.add((DirectionalLight) light);
-                    break;
-                case Point:
-                    //if (light.intersectsFrustum(camera, tempVars)) {
+            if (light.intersectsFrustum(camera, tempVars)) {
+                switch (light.getType()) {
+
+                    case Directional:
+                        directionalLights.add((DirectionalLight) light);
+                        break;
+                    case Point:
                         pointLights.add((PointLight) light);
-                    //}
-                    break;
-                case Spot:
-                    //if (light.intersectsFrustum(camera, tempVars)) {
+                        break;
+                    case Spot:
                         spotLights.add((SpotLight) light);
-                    //}
-                    break;
-                case Ambient:
-                    ambientLights.add((AmbientLight) light);
-                    break;
+                        break;
+                    case Ambient:
+                        ambientLights.add((AmbientLight) light);
+                        break;
+                }
             }
         }
         tempVars.release();

@@ -13,7 +13,6 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.shader.VarType;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.LightTechnique;
-import javafx.scene.AmbientLight;
 import jme3tools.optimize.GeometryBatchFactory;
 
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
                 count++;
 
             }
-            renderManager.setForcedMaterial(pointLightMaterial);
             renderManager.setForcedTechnique(null);
             for (int i = 0; i < pointLightColors.length; ) {
                 int size = Math.min(500, pointLightColors.length - i);
@@ -64,6 +62,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
                 pointLightGeometry.setMaterial(pointLightMaterial);
                 renderManager.renderGeometry(pointLightGeometry);
             }
+
         }
         renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
     }
@@ -74,7 +73,6 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
         RenderState renderState = new RenderState();
         renderState.setWireframe(true);
         renderManager.setForcedRenderState(renderState);
-        //renderManager.getForcedRenderState().setDepthTest(true);
         if (lightList.size() > 0) {
             Vector4f[] pointLightPositionRadius = new Vector4f[lightList.size()];
             Vector3f[] pointLightColors = new Vector3f[lightList.size()];
@@ -82,13 +80,12 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
             int count = 0;
             for (PointLight pointLight : lightList) {
                 Vector3f position = pointLight.getPosition();
-                pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, 1);
+                pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, pointLight.getRadius());
                 pointLightColors[count] = pointLight.getColor().toVector3f();
                 pointLightId[count] = count;
                 count++;
 
             }
-            renderManager.setForcedMaterial(pointLightMaterial);
             renderManager.setForcedTechnique("DebugPointLights");
             for (int i = 0; i < pointLightColors.length; ) {
                 int size = Math.min(500, pointLightColors.length - i);

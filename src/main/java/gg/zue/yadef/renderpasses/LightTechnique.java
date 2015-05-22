@@ -12,7 +12,5 @@ import java.util.ArrayList;
 public interface LightTechnique<T extends Light> {
     void render(GBuffer gBuffer, RenderManager renderManager, ArrayList<T> lightList);
 
-    default void renderDebug(GBuffer gBuffer, RenderManager renderManager, ArrayList<T> lightList) {
-
-    }
+    void renderDebug(GBuffer gBuffer, RenderManager renderManager, ArrayList<T> lightList);
 }

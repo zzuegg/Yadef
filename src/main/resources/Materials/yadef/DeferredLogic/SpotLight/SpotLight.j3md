@@ -7,7 +7,8 @@ MaterialDef PointLight {
         Texture2D gbLight;
         Texture2D gbOutput;
 
-        Vector3 spotLightPosition;
+        Vector4 spotLightPositionAngle;
+        Vector4 spotLightColorInnerAngle;
         Vector4 spotLightDirectionRange;
     }
     Technique{

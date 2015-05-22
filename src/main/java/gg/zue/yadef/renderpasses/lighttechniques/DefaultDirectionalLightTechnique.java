@@ -50,4 +50,9 @@ public class DefaultDirectionalLightTechnique implements LightTechnique<Directio
             renderManager.renderGeometry(fsQuad);
         }
     }
+
+    @Override
+    public void renderDebug(GBuffer gBuffer, RenderManager renderManager, ArrayList<DirectionalLight> lightList) {
+
+    }
 }
