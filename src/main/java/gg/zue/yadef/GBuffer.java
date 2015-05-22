@@ -34,8 +34,8 @@ public class GBuffer {
             lightFrameBuffer = new FrameBuffer(width, height, 1);
             outputFrameBuffer = new FrameBuffer(width, height, 1);
 
-            worldPositionLinearDepth = applyFilters(new Texture2D(width, height, Image.Format.RGBA16F));
-            worldNormal = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
+            worldPositionLinearDepth = applyFilters(new Texture2D(width, height, Image.Format.RGBA32F));
+            worldNormal = applyFilters(new Texture2D(width, height, Image.Format.RGBA32F));
             albedo = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
             specular = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
             depthStencil = new Texture2D(width, height, Image.Format.Depth24Stencil8);

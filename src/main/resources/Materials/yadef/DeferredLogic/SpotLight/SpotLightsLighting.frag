@@ -30,7 +30,6 @@ void main(){
         float lambert = 1-clamp(dot(worldNormal, g_NormalMatrix*lightDirection), 0.0, 1.0);
 
         float distanceFallof = attenuation(lightDirectionRange.a, length(surfaceToLight));
-        distanceFallof=1;
         float outerAngleCos = cos(lightPositionOuterAngle.a/2.0);
         float currAngleCos = dot(-lightDirection, normalize(surfaceToLight));
         float innerAngleCos = cos(lightColorInnerAngle.a);

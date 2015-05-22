@@ -32,8 +32,10 @@ public class YadefTest extends SimpleApplication {
 
         addAmbientLight();
         //addDirectionalLights();
-        //addPointLights(100);
-        addSpotLights(20);
+        addPointLights(20);
+        addSpotLights(10);
+        addFPSFLashLight();
+
         addSphereGrid();
 
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
@@ -46,15 +48,42 @@ public class YadefTest extends SimpleApplication {
         clone.move(0, 20, 0);
     }
 
+    @Override
+    public void simpleUpdate(float tpf) {
+        super.simpleUpdate(tpf);
+        moveFlashLight();
+    }
+
+
+    private SpotLight flashLight;
+
+    private void addFPSFLashLight() {
+        flashLight = new SpotLight();
+        flashLight.setSpotInnerAngle(10 * FastMath.DEG_TO_RAD);
+        flashLight.setSpotOuterAngle(6 * FastMath.DEG_TO_RAD);
+        flashLight.setColor(ColorRGBA.White);
+        rootNode.addLight(flashLight);
+    }
+
+    private void moveFlashLight() {
+        if (flashLight != null) {
+            flashLight.setDirection(cam.getDirection());
+            flashLight.setPosition(cam.getLocation().add(flashLight.getDirection().mult(5)));
+        }
+    }
+
     private void addSpotLights(int count) {
         for (int i = 0; i < count; i++) {
             SpotLight pointLight = new SpotLight();
             pointLight.setColor(ColorRGBA.randomColor().mult(2));
             pointLight.setDirection(new Vector3f(FastMath.nextRandomFloat() * -1, FastMath.nextRandomFloat() * -1, FastMath.nextRandomFloat() * -1).normalize());
             pointLight.setPosition(new Vector3f(FastMath.nextRandomFloat() * 12 * 20, 50, FastMath.nextRandomFloat() * 12 * 20));
-            float v = FastMath.nextRandomFloat() * 20;
+            float v = FastMath.abs(FastMath.nextRandomFloat() * 20) + 4;
+            System.out.println(v);
+            v = 20;
+            float v1 = 20;//Math.max(v - 4, 1;
             pointLight.setSpotOuterAngle(v * FastMath.DEG_TO_RAD);
-            pointLight.setSpotInnerAngle(Math.max(v - 4, 0) * FastMath.DEG_TO_RAD);
+            pointLight.setSpotInnerAngle(v1 * FastMath.DEG_TO_RAD);
             rootNode.addLight(pointLight);
         }
     }
