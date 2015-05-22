@@ -67,7 +67,9 @@ public class DefaultSpotLightTechnique implements LightTechnique<SpotLight> {
             spotLightMaterial.setVector4("spotLightColorInnerAngle", new Vector4f(color.x, color.y, color.z, spotLight.getSpotInnerAngle()));
             spotLightGeometry.setMaterial(spotLightMaterial);
             renderManager.setForcedTechnique(null);
-            spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
+            if (renderManager.getForcedRenderState() != null) {
+                renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
+            }
             renderManager.renderGeometry(spotLightGeometry);
         }
     }

@@ -72,7 +72,7 @@ public class DeferredRenderer implements SceneProcessor {
         postDeferredManager.renderTranslucentQueue(renderManager, viewPort, renderQueue);
 
         postDeferredManager.renderDebug(gBuffer, renderManager);
-        //lightManager.renderDebug(gBuffer, renderManager);
+        lightManager.renderDebug(gBuffer, renderManager);
 
 
         postDeferredManager.drawFrameOnScreen(gBuffer, renderManager);

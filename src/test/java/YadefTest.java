@@ -26,15 +26,14 @@ public class YadefTest extends SimpleApplication {
         flyCam.setMoveSpeed(100f);
         cube = new Geometry("Cube", new Box(4, 4, 4));
         cam.setFrustumFar(10000);
-
         initDeferred();
         //initRegular();
 
-        addAmbientLight();
-        addDirectionalLights();
-        addPointLights(100);
-        addSpotLights(100);
-        addFPSFLashLight();
+        //addAmbientLight();
+        //addDirectionalLights();
+        //addPointLights(100);
+        addSpotLights(10);
+        //addFPSFLashLight();
 
         addSphereGrid();
 
