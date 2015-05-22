@@ -31,9 +31,9 @@ public class YadefTest extends SimpleApplication {
         //initRegular();
 
         addAmbientLight();
-        //addDirectionalLights();
-        addPointLights(20);
-        addSpotLights(10);
+        addDirectionalLights();
+        addPointLights(100);
+        addSpotLights(100);
         addFPSFLashLight();
 
         addSphereGrid();
@@ -59,9 +59,10 @@ public class YadefTest extends SimpleApplication {
 
     private void addFPSFLashLight() {
         flashLight = new SpotLight();
-        flashLight.setSpotInnerAngle(10 * FastMath.DEG_TO_RAD);
-        flashLight.setSpotOuterAngle(6 * FastMath.DEG_TO_RAD);
+        flashLight.setSpotInnerAngle(6 * FastMath.DEG_TO_RAD);
+        flashLight.setSpotOuterAngle(10 * FastMath.DEG_TO_RAD);
         flashLight.setColor(ColorRGBA.White);
+        flashLight.setSpotRange(300f);
         rootNode.addLight(flashLight);
     }
 
@@ -81,7 +82,7 @@ public class YadefTest extends SimpleApplication {
             float v = FastMath.abs(FastMath.nextRandomFloat() * 20) + 4;
             System.out.println(v);
             v = 20;
-            float v1 = 20;//Math.max(v - 4, 1;
+            float v1 = 15;//Math.max(v - 4, 1;
             pointLight.setSpotOuterAngle(v * FastMath.DEG_TO_RAD);
             pointLight.setSpotInnerAngle(v1 * FastMath.DEG_TO_RAD);
             rootNode.addLight(pointLight);

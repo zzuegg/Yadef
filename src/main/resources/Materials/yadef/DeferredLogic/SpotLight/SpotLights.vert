@@ -23,6 +23,6 @@ void main(){
     vec3 origin=m_spotLightPositionAngle.xyz;
     vec3 centerPoint=origin+offsetMod[vertexId]*m_spotLightDirectionRange.xyz*m_spotLightDirectionRange.a;
     float range=m_spotLightDirectionRange.a;
-    float sine=sin(m_spotLightPositionAngle.a*2);
+    float sine=sin(m_spotLightPositionAngle.a);
     gl_Position=g_WorldViewProjectionMatrix*vec4(centerPoint+mod*sine*range,1);
 }

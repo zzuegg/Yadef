@@ -44,11 +44,12 @@ public class DefaultDirectionalLightTechnique implements LightTechnique<Directio
             directionalLightMaterial.setParam("lightCount", VarType.Int, lightList.size());
             directionalLightMaterial.setParam("lightDirections", VarType.Vector3Array, dlDirection);
             directionalLightMaterial.setParam("lightColors", VarType.Vector3Array, dlColor);
-            renderManager.setForcedMaterial(directionalLightMaterial);
+            //renderManager.setForcedMaterial(directionalLightMaterial);
             renderManager.setForcedTechnique(null);
             fsQuad.setMaterial(directionalLightMaterial);
             renderManager.renderGeometry(fsQuad);
         }
+        renderManager.setForcedMaterial(null);
     }
 
     @Override

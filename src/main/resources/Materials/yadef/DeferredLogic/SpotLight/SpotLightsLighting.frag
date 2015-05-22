@@ -27,14 +27,14 @@ void main(){
         lightDirection = normalize(lightDirection);
 
 
-        float lambert = 1-clamp(dot(worldNormal, g_NormalMatrix*lightDirection), 0.0, 1.0);
+        float lambert = clamp(dot(worldNormal, g_NormalMatrix*normalize(surfaceToLight)), 0.0, 1.0);
 
         float distanceFallof = attenuation(lightDirectionRange.a, length(surfaceToLight));
-        float outerAngleCos = cos(lightPositionOuterAngle.a/2.0);
+        float outerAngleCos = cos(lightPositionOuterAngle.a);
         float currAngleCos = dot(-lightDirection, normalize(surfaceToLight));
         float innerAngleCos = cos(lightColorInnerAngle.a);
 
-        float angleFallof = 1-clamp((currAngleCos-outerAngleCos)/(innerAngleCos-outerAngleCos), 0.0, 1.0);
+        float angleFallof = clamp((currAngleCos-outerAngleCos)/(innerAngleCos-outerAngleCos), 0.0, 1.0);
         vec4 color=vec4(lightColorInnerAngle.xyz,1);
         color=color*distanceFallof*angleFallof*lambert;
         lightOut=color;
