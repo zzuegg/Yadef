@@ -11,7 +11,7 @@ uniform vec3[MAX_LIGHTS] m_lightColors;
 const int vertCount=30;
 
 void main(){
-    int lightId=int(gl_VertexID/vertCount);
+    int lightId=int(gl_VertexID/144);
     if(lightId>=m_lightCount){
         gl_Position=vec4(-2,-2,-2,-2);
     }else{

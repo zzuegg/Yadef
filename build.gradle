@@ -18,6 +18,7 @@ dependencies {
 
     //Local jme, adjust flatDir above
     compile name:'jme3-core'
+    compile name:'jme3-effects'
     compile name:'jme3-desktop'
     compile name:'jme3-lwjgl'
     compile name:'jinput'

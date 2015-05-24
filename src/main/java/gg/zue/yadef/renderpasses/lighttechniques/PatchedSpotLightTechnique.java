@@ -169,9 +169,9 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
         Vector3f[] positions = new Vector3f[5];
         positions[0] = new Vector3f(0, 0, 0);
         positions[1] = new Vector3f(-1, -1, -1);
-        positions[1] = new Vector3f(1, -1, -1);
-        positions[1] = new Vector3f(1, -1, 1);
-        positions[1] = new Vector3f(-1, -1, 1);
+        positions[2] = new Vector3f(1, -1, -1);
+        positions[3] = new Vector3f(1, -1, 1);
+        positions[4] = new Vector3f(-1, -1, 1);
         int[] indices = new int[]{
                 0, 1, 2,
                 0, 2, 3,
