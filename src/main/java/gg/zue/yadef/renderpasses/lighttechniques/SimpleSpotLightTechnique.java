@@ -25,13 +25,12 @@ import java.util.Collection;
  */
 public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
 
-    private final AssetManager assetManager;
-    private Material spotLightMaterial;
-    private Geometry spotLightGeometry;
+
+    private final Material spotLightMaterial;
+    private final Geometry spotLightGeometry;
 
 
     public SimpleSpotLightTechnique(AssetManager assetManager) {
-        this.assetManager = assetManager;
         spotLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/SpotLight/SpotLight.j3md");
         spotLightGeometry = buildGeometry(1);
         spotLightMaterial.setInt("maxLights",1);
@@ -81,7 +80,7 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
         }
     }
 
-    Geometry buildGeometry(int count) {
+    private Geometry buildGeometry(int count) {
         Mesh mesh = new Mesh();
         Vector3f[] positions = new Vector3f[5];
         positions[0] = new Vector3f(0, 0, 0);

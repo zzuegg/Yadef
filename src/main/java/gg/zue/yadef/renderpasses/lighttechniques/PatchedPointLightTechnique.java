@@ -7,31 +7,26 @@ import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.Renderer;
-import com.jme3.renderer.opengl.GLRenderer;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.shader.VarType;
 import com.jme3.util.BufferUtils;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.LightTechnique;
-import jme3tools.optimize.GeometryBatchFactory;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Created by MiZu on 21.05.2015.
  */
 public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
-    AssetManager assetManager;
-    Material pointLightMaterial;
-    Geometry pointLightGeometry;
-    int maxLights;
+    private final AssetManager assetManager;
+    private final Material pointLightMaterial;
+    private final Geometry pointLightGeometry;
+    private final int maxLights;
 
     public PatchedPointLightTechnique(AssetManager assetManager, int maxUniformParameters) {
         this.assetManager = assetManager;
@@ -49,13 +44,11 @@ public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
         if (lightList.size() > 0) {
             Vector4f[] pointLightPositionRadius = new Vector4f[lightList.size()];
             Vector3f[] pointLightColors = new Vector3f[lightList.size()];
-            int[] pointLightId = new int[lightList.size()];
             int count = 0;
             for (PointLight pointLight : lightList) {
                 Vector3f position = pointLight.getPosition();
                 pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, pointLight.getRadius());
                 pointLightColors[count] = pointLight.getColor().toVector3f();
-                pointLightId[count] = count;
                 count++;
 
             }
@@ -87,13 +80,11 @@ public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
         if (lightList.size() > 0) {
             Vector4f[] pointLightPositionRadius = new Vector4f[lightList.size()];
             Vector3f[] pointLightColors = new Vector3f[lightList.size()];
-            int[] pointLightId = new int[lightList.size()];
             int count = 0;
             for (PointLight pointLight : lightList) {
                 Vector3f position = pointLight.getPosition();
                 pointLightPositionRadius[count] = new Vector4f(position.x, position.y, position.z, pointLight.getRadius());
                 pointLightColors[count] = pointLight.getColor().toVector3f();
-                pointLightId[count] = count;
                 count++;
 
             }
@@ -113,7 +104,7 @@ public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
         renderManager.setForcedRenderState(forcedRenderState);
     }
 
-    Field vertexCountField;
+    private Field vertexCountField;
 
     private void updateMeshForRendering(int size) {
         if (vertexCountField == null) {

@@ -11,7 +11,7 @@ import gg.zue.yadef.GBuffer;
  * Created by MiZu on 21.05.2015.
  */
 public class DeferredRenderManager {
-    private RenderState deferredRenderState;
+    private final RenderState deferredRenderState;
 
     public DeferredRenderManager() {
         deferredRenderState = new RenderState();

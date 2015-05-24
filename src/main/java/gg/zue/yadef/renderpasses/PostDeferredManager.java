@@ -15,11 +15,11 @@ import gg.zue.yadef.GBuffer;
  * Created by MiZu on 21.05.2015.
  */
 public class PostDeferredManager {
-    AssetManager assetManager;
-    private RenderState renderState;
-    private Geometry fsQuad;
-    private Material resolveGBufferMaterial;
-    private Material renderToScreenMaterial;
+    private final AssetManager assetManager;
+    private final RenderState renderState;
+    private final Geometry fsQuad;
+    private final Material resolveGBufferMaterial;
+    private final Material renderToScreenMaterial;
 
     public PostDeferredManager(AssetManager assetManager) {
         this.assetManager = assetManager;

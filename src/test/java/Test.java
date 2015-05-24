@@ -10,7 +10,7 @@ import java.nio.ShortBuffer;
 /**
  * Created by MiZu on 24.05.2015.
  */
-public class Test {
+class Test {
     public static void main(String[] args) {
         Geometry geometry = new Geometry("PointLight", new Sphere(6, 6, 1));
         Mesh mesh = geometry.getMesh();

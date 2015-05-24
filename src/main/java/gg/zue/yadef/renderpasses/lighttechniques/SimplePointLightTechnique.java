@@ -16,16 +16,15 @@ import gg.zue.yadef.renderpasses.LightTechnique;
 import jme3tools.optimize.GeometryBatchFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
  * Created by MiZu on 21.05.2015.
  */
 public class SimplePointLightTechnique implements LightTechnique<PointLight> {
-    AssetManager assetManager;
-    Material pointLightMaterial;
-    Geometry pointLightGeometry;
+    private final AssetManager assetManager;
+    private final Material pointLightMaterial;
+    private final Geometry pointLightGeometry;
 
     public SimplePointLightTechnique(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -72,11 +71,10 @@ public class SimplePointLightTechnique implements LightTechnique<PointLight> {
         Geometry geometry = new Geometry("PointLight", new Sphere(6, 6, 1));
         System.out.println(geometry.getMesh().getTriangleCount());
         Collection<Geometry> plGeo = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < 1; i++) {
             plGeo.add(geometry.clone());
         }
         GeometryBatchFactory.mergeGeometries(plGeo, pointLightMesh);
-        Geometry pointLightPatch = new Geometry("PointLights", pointLightMesh);
-        return pointLightPatch;
+        return new Geometry("PointLights", pointLightMesh);
     }
 }

@@ -1,5 +1,4 @@
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
@@ -8,22 +7,18 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.SceneProcessor;
-import com.jme3.post.filters.DepthOfFieldFilter;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SimpleBatchNode;
 import com.jme3.scene.shape.Box;
-import com.jme3.water.WaterFilter;
 import gg.zue.yadef.DeferredRenderer;
 
 
 /**
  * Created by MiZu on 19.05.2015.
  */
-public class YadefTest extends SimpleApplication {
-    Geometry cube;
+class YadefTest extends SimpleApplication {
+    private Geometry cube;
 
     @Override
     public void simpleInitApp() {
@@ -110,20 +105,20 @@ public class YadefTest extends SimpleApplication {
     }
 
 
-    void addAmbientLight() {
+    private void addAmbientLight() {
         AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(ColorRGBA.White.mult(0.1f));
         rootNode.addLight(ambientLight);
     }
 
-    void addDirectionalLights() {
+    private void addDirectionalLights() {
         DirectionalLight directionalLight = new DirectionalLight();
         directionalLight.setDirection(new Vector3f(-1, 0.5f, 0).normalize());
         directionalLight.setColor(ColorRGBA.White.mult(0.5f));
         rootNode.addLight(directionalLight);
     }
 
-    void initDeferred() {
+    private void initDeferred() {
         for (SceneProcessor sceneProcessor : viewPort.getProcessors()) {
             viewPort.removeProcessor(sceneProcessor);
         }
@@ -150,7 +145,7 @@ public class YadefTest extends SimpleApplication {
         rootNode.attachChild(cube);
     }
 
-    void addSphereGrid() {
+    private void addSphereGrid() {
         SimpleBatchNode simpleBatchNode = new SimpleBatchNode();
         for (int x = 0; x < 20; x++) {
             for (int y = 0; y < 20; y++) {

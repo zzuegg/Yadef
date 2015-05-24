@@ -22,7 +22,8 @@ public class GBuffer {
     private Texture2D depthStencil;
     private Texture2D outputTexture;
 
-    int height, width;
+    private int height;
+    private int width;
 
     public void reshape(int height, int width) {
         if (height != this.height || width != this.width) {
@@ -56,7 +57,7 @@ public class GBuffer {
         }
     }
 
-    Texture2D applyFilters(Texture2D texture2D) {
+    private Texture2D applyFilters(Texture2D texture2D) {
         texture2D.setMagFilter(Texture.MagFilter.Nearest);
         texture2D.setMinFilter(Texture.MinFilter.NearestNoMipMaps);
         return texture2D;

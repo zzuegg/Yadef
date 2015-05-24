@@ -18,18 +18,18 @@ import java.util.ArrayList;
  * Created by MiZu on 21.05.2015.
  */
 public class LightManager {
-    AssetManager assetManager;
-    RenderState renderState;
+    private AssetManager assetManager;
+    private final RenderState renderState;
 
-    ArrayList<AmbientLight> ambientLights = new ArrayList<>();
-    ArrayList<PointLight> pointLights = new ArrayList<>();
-    ArrayList<SpotLight> spotLights = new ArrayList<>();
-    ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
+    private final ArrayList<AmbientLight> ambientLights = new ArrayList<>();
+    private final ArrayList<PointLight> pointLights = new ArrayList<>();
+    private final ArrayList<SpotLight> spotLights = new ArrayList<>();
+    private final ArrayList<DirectionalLight> directionalLights = new ArrayList<>();
 
-    LightTechnique<AmbientLight> ambientLightLightTechnique;
-    LightTechnique<DirectionalLight> directionalLightLightTechnique;
-    LightTechnique<PointLight> pointLightLightTechnique;
-    LightTechnique<SpotLight> spotLightLightTechnique;
+    private LightTechnique<AmbientLight> ambientLightLightTechnique;
+    private LightTechnique<DirectionalLight> directionalLightLightTechnique;
+    private LightTechnique<PointLight> pointLightLightTechnique;
+    private LightTechnique<SpotLight> spotLightLightTechnique;
 
     private LightManager() {
         this.renderState = new RenderState();

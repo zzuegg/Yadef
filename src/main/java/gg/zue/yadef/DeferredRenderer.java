@@ -3,7 +3,6 @@ package gg.zue.yadef;
 import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
 import com.jme3.post.SceneProcessor;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.Limits;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -14,27 +13,24 @@ import gg.zue.yadef.renderpasses.DeferredRenderManager;
 import gg.zue.yadef.renderpasses.LightManager;
 import gg.zue.yadef.renderpasses.PostDeferredManager;
 
-import java.lang.reflect.Field;
-import java.util.EnumMap;
-import java.util.Map;
-
 /**
  * Created by MiZu on 21.05.2015.
  */
 public class DeferredRenderer implements SceneProcessor {
-    Application application;
-    AssetManager assetManager;
-    GBuffer gBuffer;
-    boolean initialized = false;
-    RenderManager renderManager;
-    ViewPort viewPort;
+    private final Application application;
+    private final AssetManager assetManager;
+    private final GBuffer gBuffer;
+    private boolean initialized = false;
+    private RenderManager renderManager;
+    private ViewPort viewPort;
 
-    DeferredRenderManager DeferredRenderManager;
-    LightManager lightManager;
-    PostDeferredManager postDeferredManager;
+    private final DeferredRenderManager DeferredRenderManager;
+    private final LightManager lightManager;
+    private final PostDeferredManager postDeferredManager;
 
 
-    boolean debugLightVolumes = false, debugGBufferTextures = false;
+    private boolean debugLightVolumes = false;
+    private boolean debugGBufferTextures = false;
 
     public DeferredRenderer(Application application) {
         this.application = application;

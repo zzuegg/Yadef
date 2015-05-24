@@ -1,16 +1,13 @@
 package gg.zue.yadef.renderpasses.lighttechniques;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
-import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 import com.jme3.shader.VarType;
-import com.jme3.shadow.DirectionalLightShadowRenderer;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.LightTechnique;
 
@@ -20,13 +17,11 @@ import java.util.ArrayList;
  * Created by MiZu on 21.05.2015.
  */
 public class DefaultDirectionalLightTechnique implements LightTechnique<DirectionalLight> {
-    AssetManager assetManager;
-    private Geometry fsQuad;
-    private Material directionalLightMaterial;
+    private final Geometry fsQuad;
+    private final Material directionalLightMaterial;
 
 
     public DefaultDirectionalLightTechnique(AssetManager assetManager) {
-        this.assetManager = assetManager;
         this.fsQuad = new Geometry("FsQuad", new Quad(1, 1));
         this.directionalLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLight.j3md");
         this.directionalLightMaterial.setInt("maxLights", 20);

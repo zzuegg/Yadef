@@ -4,39 +4,29 @@ import com.jme3.asset.AssetManager;
 import com.jme3.light.SpotLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.*;
-import com.jme3.scene.debug.WireFrustum;
-import com.jme3.scene.shape.Box;
 import com.jme3.shader.VarType;
 import com.jme3.util.BufferUtils;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.LightTechnique;
-import jme3tools.optimize.GeometryBatchFactory;
 
 import java.lang.reflect.Field;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Created by MiZu on 21.05.2015.
  */
 public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
 
-    private final AssetManager assetManager;
-    private Material spotLightMaterial;
-    private Geometry spotLightGeometry;
-    int maxLights;
+    private final Material spotLightMaterial;
+    private final Geometry spotLightGeometry;
+    private final int maxLights;
 
     public PatchedSpotLightTechnique(AssetManager assetManager, int maxUniformParameters) {
-        this.assetManager = assetManager;
         spotLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/SpotLight/SpotLight.j3md");
         spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
         /*
@@ -146,7 +136,7 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
         }
     }
 
-    Field vertexCountField;
+    private Field vertexCountField;
 
     private void updateMeshForRendering(int size) {
         if (vertexCountField == null) {
@@ -164,7 +154,7 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
         }
     }
 
-    Geometry buildGeometry(int count) {
+    private Geometry buildGeometry(int count) {
         Mesh mesh = new Mesh();
         Vector3f[] positions = new Vector3f[5];
         positions[0] = new Vector3f(0, 0, 0);
