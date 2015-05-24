@@ -65,8 +65,8 @@ public class LightManager {
 
         //Ambient Light
         ambientLightLightTechnique.render(gBuffer, renderManager, ambientLights);
+
         renderState.setDepthTest(false);
-        //Directional Light
         directionalLightLightTechnique.render(gBuffer, renderManager, directionalLights);
 
         renderState.setDepthTest(true);

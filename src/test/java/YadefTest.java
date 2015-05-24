@@ -1,4 +1,5 @@
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
@@ -24,6 +25,8 @@ public class YadefTest extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         flyCam.setMoveSpeed(100f);
+        flyCam.setDragToRotate(true);
+        inputManager.setCursorVisible(true);
         cube = new Geometry("Cube", new Box(4, 4, 4));
         cam.setFrustumFar(10000);
         initDeferred();
@@ -31,8 +34,8 @@ public class YadefTest extends SimpleApplication {
 
         addAmbientLight();
         addDirectionalLights();
-        addPointLights(100);
-        addSpotLights(100);
+        addPointLights(10);
+        addSpotLights(10);
         addFPSFLashLight();
 
         addSphereGrid();
@@ -45,6 +48,8 @@ public class YadefTest extends SimpleApplication {
         clone.setQueueBucket(RenderQueue.Bucket.Translucent);
         rootNode.attachChild(clone);
         clone.move(0, 20, 0);
+        stateManager.attach(new ScreenshotAppState("C:\\Users\\MiZu\\Desktop\\JmeScreenShots\\"));
+        setPauseOnLostFocus(false);
     }
 
     @Override
@@ -116,8 +121,8 @@ public class YadefTest extends SimpleApplication {
         for (SceneProcessor sceneProcessor : viewPort.getProcessors()) {
             viewPort.removeProcessor(sceneProcessor);
         }
-
-        viewPort.addProcessor(new DeferredRenderer(this));
+        DeferredRenderer deferredRenderer = new DeferredRenderer(this);
+        viewPort.addProcessor(deferredRenderer);
         Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
         material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));
         material.setTexture("normalTexture", assetManager.loadTexture("Textures/normalFlat.jpg"));

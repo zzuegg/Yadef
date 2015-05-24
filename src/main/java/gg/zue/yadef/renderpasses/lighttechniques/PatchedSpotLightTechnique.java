@@ -73,6 +73,9 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
                 spotLightMaterial.setParam("spotLightColorInnerAngle", VarType.Vector4Array, spotLightColorInnerAngleTmp);
                 renderManager.renderGeometry(spotLightGeometry);
             }
+            if (renderManager.getForcedRenderState() != null) {
+                renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
+            }
         }
     }
 

@@ -27,6 +27,9 @@ public class DeferredRenderer implements SceneProcessor {
     LightManager lightManager;
     PostDeferredManager postDeferredManager;
 
+
+    boolean debugLightVolumes = false, debugGBufferTextures = false;
+
     public DeferredRenderer(Application application) {
         this.application = application;
         this.assetManager = application.getAssetManager();
@@ -72,13 +75,23 @@ public class DeferredRenderer implements SceneProcessor {
         postDeferredManager.renderSkyQueue(renderManager, viewPort, renderQueue);
         postDeferredManager.renderTranslucentQueue(renderManager, viewPort, renderQueue);
 
-        postDeferredManager.renderDebug(gBuffer, renderManager);
-        //lightManager.renderDebug(gBuffer, renderManager);
-
+        if (debugGBufferTextures) {
+            postDeferredManager.renderDebug(gBuffer, renderManager);
+        }
+        if (debugLightVolumes) {
+            lightManager.renderDebug(gBuffer, renderManager);
+        }
 
         postDeferredManager.drawFrameOnScreen(gBuffer, renderManager);
     }
 
+    public void setDebugLightVolumes(boolean debugLightVolumes) {
+        this.debugLightVolumes = debugLightVolumes;
+    }
+
+    public void setDebugGBufferTextures(boolean debugGBufferTextures) {
+        this.debugGBufferTextures = debugGBufferTextures;
+    }
 
     @Override
     public void postFrame(FrameBuffer frameBuffer) {
