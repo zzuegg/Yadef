@@ -19,6 +19,7 @@ import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.LightTechnique;
 import jme3tools.optimize.GeometryBatchFactory;
 
+import java.lang.reflect.Field;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,15 +34,34 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
     private Material spotLightMaterial;
     private Geometry spotLightGeometry;
     int maxLights;
+
     public PatchedSpotLightTechnique(AssetManager assetManager, int maxUniformParameters) {
         this.assetManager = assetManager;
         spotLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/SpotLight/SpotLight.j3md");
         spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
-        maxLights=(maxUniformParameters-100)/12;
+        /*
+        uniform mat4 g_WorldViewProjectionMatrix;
+
+        out vec4 lightColorInnerAngle;
+        out vec4 lightPositionOuterAngle;
+        out vec4 lightDirectionRange;
+
+        uniform int m_lightCount;
+        uniform vec4[MAX_LIGHTS] m_spotLightPositionAngle;
+        uniform vec4[MAX_LIGHTS] m_spotLightDirectionRange;
+        uniform vec4[MAX_LIGHTS] m_spotLightColorInnerAngle;
+
+        const float offsetMod[5]=float[5](0,1,1,1,1);
+        const vec3 upMod[5]=vec3[5](    vec3(0),vec3(1),vec3(1),vec3(-1),vec3(-1));
+        const vec3 leftMod[5]=vec3[5](  vec3(0),vec3(1),vec3(-1),vec3(-1),vec3(1));
+        const int id[18]=int[18](0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1,1, 3, 2, 4, 3, 1);
+         */
+
+        maxLights = (maxUniformParameters - 200) / 12;
         //maxLights=334;
-        System.out.println("Spotlights: "+maxLights);
+        System.out.println("Spotlights: " + maxLights);
         spotLightMaterial.setInt("maxLights", maxLights);
-        spotLightGeometry=buildGeometry(maxLights);
+        spotLightGeometry = buildGeometry(maxLights);
     }
 
     @Override
@@ -71,6 +91,7 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
                 Vector4f[] spotLightDirectionRangeTmp = Arrays.copyOfRange(spotLightDirectionRange, i, i + size);
                 Vector4f[] spotLightColorInnerAngleTmp = Arrays.copyOfRange(spotLightColorInnerAngle, i, i + size);
                 i = i + size;
+                updateMeshForRendering(size);
                 spotLightMaterial.setParam("lightCount", VarType.Int, size);
                 spotLightMaterial.setParam("spotLightPositionAngle", VarType.Vector4Array, spotLightPositionAngleTmp);
                 spotLightMaterial.setParam("spotLightDirectionRange", VarType.Vector4Array, spotLightDirectionRangeTmp);
@@ -112,6 +133,7 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
                 Vector4f[] spotLightDirectionRangeTmp = Arrays.copyOfRange(spotLightDirectionRange, i, i + size);
                 Vector4f[] spotLightColorInnerAngleTmp = Arrays.copyOfRange(spotLightColorInnerAngle, i, i + size);
                 i = i + size;
+                updateMeshForRendering(size);
                 spotLightMaterial.setParam("lightCount", VarType.Int, size);
                 spotLightMaterial.setParam("spotLightPositionAngle", VarType.Vector4Array, spotLightPositionAngleTmp);
                 spotLightMaterial.setParam("spotLightDirectionRange", VarType.Vector4Array, spotLightDirectionRangeTmp);
@@ -121,6 +143,24 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
             if (renderManager.getForcedRenderState() != null) {
                 renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
             }
+        }
+    }
+
+    Field vertexCountField;
+
+    private void updateMeshForRendering(int size) {
+        if (vertexCountField == null) {
+            try {
+                vertexCountField = spotLightGeometry.getMesh().getClass().getDeclaredField("vertCount");
+                vertexCountField.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            vertexCountField.set(spotLightGeometry.getMesh(), size * 18);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
@@ -140,16 +180,24 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
                 1, 3, 2,
                 4, 3, 1,
         };
-        mesh.setBuffer(VertexBuffer.Type.Index, 3, indices);
-        mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(positions));
+        Vector3f[] pTmp = new Vector3f[count * indices.length];
+        for (int i = 0; i < count; i++) {
+            for (int j = 0; j < indices.length; j++) {
+                pTmp[i * indices.length + j] = positions[indices[j]];
+            }
+        }
+        //mesh.setBuffer(VertexBuffer.Type.Index, 3, indices);
+        mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(pTmp));
         Geometry tmp = new Geometry("SpotLight", mesh);
-        Collection<Geometry> plGeo = new ArrayList<>();
+        System.out.println(tmp.getMesh().getVertexCount());
+        return tmp;
+        /*Collection<Geometry> plGeo = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             plGeo.add(tmp.clone());
         }
         Mesh spotLightMesh = new Mesh();
         GeometryBatchFactory.mergeGeometries(plGeo, spotLightMesh);
-        return new Geometry("SpotLightPatch", spotLightMesh);
+        return new Geometry("SpotLightPatch", spotLightMesh);*/
     }
 
 }

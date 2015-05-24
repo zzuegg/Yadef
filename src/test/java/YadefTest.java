@@ -8,11 +8,14 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.SceneProcessor;
+import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SimpleBatchNode;
 import com.jme3.scene.shape.Box;
+import com.jme3.water.WaterFilter;
 import gg.zue.yadef.DeferredRenderer;
 
 
@@ -35,7 +38,7 @@ public class YadefTest extends SimpleApplication {
         addAmbientLight();
         addDirectionalLights();
         addPointLights(10);
-        addSpotLights(10);
+        addSpotLights(500);
         addFPSFLashLight();
 
         addSphereGrid();
@@ -50,12 +53,15 @@ public class YadefTest extends SimpleApplication {
         clone.move(0, 20, 0);
         stateManager.attach(new ScreenshotAppState("C:\\Users\\MiZu\\Desktop\\JmeScreenShots\\"));
         setPauseOnLostFocus(false);
+
+
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         super.simpleUpdate(tpf);
         moveFlashLight();
+
     }
 
 
@@ -122,7 +128,7 @@ public class YadefTest extends SimpleApplication {
             viewPort.removeProcessor(sceneProcessor);
         }
         DeferredRenderer deferredRenderer = new DeferredRenderer(this);
-        deferredRenderer.setDebugLightVolumes(true);
+        //deferredRenderer.setDebugLightVolumes(true);
         viewPort.addProcessor(deferredRenderer);
         Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
         material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));

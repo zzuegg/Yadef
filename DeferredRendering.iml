@@ -21,5 +21,6 @@
     <orderEntry type="library" exported="" name="Gradle: :jme3-lwjgl:" level="project" />
     <orderEntry type="library" exported="" name="Gradle: :jinput:" level="project" />
     <orderEntry type="library" exported="" name="Gradle: :lwjgl:" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: :jme3-effects:" level="project" />
   </component>
 </module>
