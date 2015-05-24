@@ -40,15 +40,6 @@ public class DeferredRenderer implements SceneProcessor {
         this.DeferredRenderManager = new DeferredRenderManager();
         this.lightManager = new LightManager(assetManager,maxUniformParameters);
         this.postDeferredManager = new PostDeferredManager(assetManager);
-        /*try {
-            Field limits = GLRenderer.class.getField("limits");
-            limits.setAccessible(true);
-            EnumMap<Limits, Integer> rendererLimits = (EnumMap<Limits, Integer>) limits.get(application.getRenderer());
-            System.out.println(rendererLimits.get("FLIMIT: " + Limits.FragmentUniforms));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }*/
-
     }
 
     @Override
