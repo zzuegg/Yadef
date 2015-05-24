@@ -6,6 +6,7 @@ MaterialDef RenderToScreen {
         Texture2D gbSpecular;
         Texture2D gbLight;
         Texture2D gbOutput;
+        Texture2D gbDepth;
     }
 
     Technique{

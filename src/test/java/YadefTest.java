@@ -37,13 +37,13 @@ public class YadefTest extends SimpleApplication {
 
         addAmbientLight();
         addDirectionalLights();
-        addPointLights(10);
-        //addSpotLights(500);
+        addPointLights(10000);
+        //addSpotLights(100);
         addFPSFLashLight();
 
         addSphereGrid();
 
-        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        /*Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
         material.setTexture("NormalMap", assetManager.loadTexture("Textures/normalFlat.jpg"));
         Geometry clone = cube.clone();
@@ -53,7 +53,7 @@ public class YadefTest extends SimpleApplication {
         clone.move(0, 20, 0);
         stateManager.attach(new ScreenshotAppState("C:\\Users\\MiZu\\Desktop\\JmeScreenShots\\"));
         setPauseOnLostFocus(false);
-
+*/
 
     }
 
@@ -128,7 +128,8 @@ public class YadefTest extends SimpleApplication {
             viewPort.removeProcessor(sceneProcessor);
         }
         DeferredRenderer deferredRenderer = new DeferredRenderer(this);
-        deferredRenderer.setDebugLightVolumes(true);
+        //deferredRenderer.setDebugLightVolumes(true);
+        //deferredRenderer.setDebugGBufferTextures(true);
         viewPort.addProcessor(deferredRenderer);
         Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
         material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));

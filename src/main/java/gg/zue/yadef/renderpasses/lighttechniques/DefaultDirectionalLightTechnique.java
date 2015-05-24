@@ -5,10 +5,12 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
+import com.jme3.post.Filter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 import com.jme3.shader.VarType;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.LightTechnique;
 
@@ -21,6 +23,7 @@ public class DefaultDirectionalLightTechnique implements LightTechnique<Directio
     AssetManager assetManager;
     private Geometry fsQuad;
     private Material directionalLightMaterial;
+
 
     public DefaultDirectionalLightTechnique(AssetManager assetManager) {
         this.assetManager = assetManager;

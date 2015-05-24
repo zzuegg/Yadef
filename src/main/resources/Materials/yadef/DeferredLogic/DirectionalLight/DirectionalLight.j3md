@@ -6,7 +6,7 @@ MaterialDef DeferredDebug {
         Texture2D gbSpecular;
         Texture2D gbLight;
         Texture2D gbOutput;
-
+        Texture2D gbDepth;
         Int maxLights : 1;
         Int lightCount;
         Vector3Array lightDirections;
