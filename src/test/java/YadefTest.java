@@ -29,17 +29,17 @@ public class YadefTest extends SimpleApplication {
         initDeferred();
         //initRegular();
 
-        //addAmbientLight();
-        //addDirectionalLights();
-        //addPointLights(100);
-        addSpotLights(10);
-        //addFPSFLashLight();
+        addAmbientLight();
+        addDirectionalLights();
+        addPointLights(100);
+        addSpotLights(100);
+        addFPSFLashLight();
 
         addSphereGrid();
 
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
-        material.setTexture("NormalMap", assetManager.loadTexture("Textures/normal.jpg"));
+        material.setTexture("NormalMap", assetManager.loadTexture("Textures/normalFlat.jpg"));
         Geometry clone = cube.clone();
         clone.setMaterial(material);
         clone.setQueueBucket(RenderQueue.Bucket.Translucent);
@@ -120,14 +120,14 @@ public class YadefTest extends SimpleApplication {
         viewPort.addProcessor(new DeferredRenderer(this));
         Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
         material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));
-        material.setTexture("normalTexture", assetManager.loadTexture("Textures/normal.jpg"));
+        material.setTexture("normalTexture", assetManager.loadTexture("Textures/normalFlat.jpg"));
         cube.setMaterial(material);
     }
 
     void initRegular() {
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
-        material.setTexture("NormalMap", assetManager.loadTexture("Textures/normal.jpg"));
+        material.setTexture("NormalMap", assetManager.loadTexture("Textures/normalFlat.jpg"));
         cube.setMaterial(material);
 
         cube.getMaterial().setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 0.5f, 0f));

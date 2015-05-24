@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :jme3-core:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../jMonkeyEngine3/dist/lib/jme3-core.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

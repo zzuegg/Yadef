@@ -8,10 +8,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.util.TempVars;
 import gg.zue.yadef.GBuffer;
-import gg.zue.yadef.renderpasses.lighttechniques.DefaultAmbientLightTechnique;
-import gg.zue.yadef.renderpasses.lighttechniques.DefaultDirectionalLightTechnique;
-import gg.zue.yadef.renderpasses.lighttechniques.DefaultPointLightTechnique;
-import gg.zue.yadef.renderpasses.lighttechniques.DefaultSpotLightTechnique;
+import gg.zue.yadef.renderpasses.lighttechniques.*;
 
 
 import java.util.ArrayList;
@@ -47,8 +44,8 @@ public class LightManager {
         this.assetManager = assetManager;
         ambientLightLightTechnique = new DefaultAmbientLightTechnique();
         directionalLightLightTechnique = new DefaultDirectionalLightTechnique(assetManager);
-        pointLightLightTechnique = new DefaultPointLightTechnique(assetManager);
-        spotLightLightTechnique = new DefaultSpotLightTechnique(assetManager);
+        pointLightLightTechnique = new PatchedPointLightTechnique(assetManager);
+        spotLightLightTechnique = new PatchedSpotLightTechnique(assetManager);
     }
 
 
@@ -68,9 +65,12 @@ public class LightManager {
 
         //Ambient Light
         ambientLightLightTechnique.render(gBuffer, renderManager, ambientLights);
-
+        renderState.setDepthTest(false);
         //Directional Light
         directionalLightLightTechnique.render(gBuffer, renderManager, directionalLights);
+
+        renderState.setDepthTest(true);
+        renderState.setDepthFunc(RenderState.TestFunction.GreaterOrEqual);
 
         //Point Light
         pointLightLightTechnique.render(gBuffer, renderManager, pointLights);

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: :jinput:">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../jMonkeyEngine3/dist/lib/jinput.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

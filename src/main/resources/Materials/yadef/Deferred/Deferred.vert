@@ -20,7 +20,7 @@ void main(){
     gl_Position=g_WorldViewProjectionMatrix * pos;
     position=g_WorldMatrix*pos;
     texCoord=inTexCoord;
-    normal=g_NormalMatrix*inNormal;
+    normal=inNormal;
     tangent=inTangent.xyz;
     binormal=cross(tangent,normal);
 }

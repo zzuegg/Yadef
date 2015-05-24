@@ -7,9 +7,10 @@ MaterialDef PointLight {
         Texture2D gbLight;
         Texture2D gbOutput;
 
-        Vector4 spotLightPositionAngle;
-        Vector4 spotLightColorInnerAngle;
-        Vector4 spotLightDirectionRange;
+        Int lightCount;
+        Vector4Array spotLightPositionAngle;
+        Vector4Array spotLightColorInnerAngle;
+        Vector4Array spotLightDirectionRange;
     }
     Technique{
         VertexShader GLSL150:   Materials/yadef/DeferredLogic/SpotLight/SpotLights.vert

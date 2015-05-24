@@ -5,14 +5,19 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    flatDir{
+        dirs 'D:\\Programming\\Projects\\jMonkeyEngine\\jMonkeyEngine3\\dist\\lib'
+    }
     maven {
         url 'http://updates.jmonkeyengine.org/maven'
     }
 }
 
 dependencies {
-    //compile 'com.jme3:jme3-core:3.0.+'
-    //compile 'com.jme3:jme3-desktop:3.0.+'
-    //compile 'com.jme3:jme3-lwjgl:3.0.+'
+    compile name:'jme3-core'
+    compile name:'jme3-desktop'
+    compile name:'jme3-lwjgl'
+    compile name:'jinput'
+    compile name:'lwjgl'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

@@ -3,6 +3,7 @@ package gg.zue.yadef;
 import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
 import com.jme3.post.SceneProcessor;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
@@ -48,7 +49,6 @@ public class DeferredRenderer implements SceneProcessor {
         if (width != 0 && height != 0) {
             this.gBuffer.reshape(height, width);
             initialized = true;
-            System.out.println(width + " : " + height);
         }
     }
 
@@ -64,6 +64,7 @@ public class DeferredRenderer implements SceneProcessor {
 
     @Override
     public void postQueue(RenderQueue renderQueue) {
+
         DeferredRenderManager.renderOpaqueQueue(gBuffer, renderManager, viewPort, renderQueue);
         lightManager.render(gBuffer, renderManager, viewPort);
 
@@ -72,7 +73,7 @@ public class DeferredRenderer implements SceneProcessor {
         postDeferredManager.renderTranslucentQueue(renderManager, viewPort, renderQueue);
 
         postDeferredManager.renderDebug(gBuffer, renderManager);
-        lightManager.renderDebug(gBuffer, renderManager);
+        //lightManager.renderDebug(gBuffer, renderManager);
 
 
         postDeferredManager.drawFrameOnScreen(gBuffer, renderManager);

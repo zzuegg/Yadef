@@ -12,11 +12,11 @@ const int vertCount=30;
 
 void main(){
     int lightId=int(gl_VertexID/vertCount);
-    if(lightId>m_lightCount){
+    if(lightId>=m_lightCount){
         gl_Position=vec4(-2,-2,-2,-2);
     }else{
     pointLightPositionRadius=m_lightPositionRadius[lightId];
     lightColor=m_lightColors[lightId];
-    gl_Position=g_WorldViewProjectionMatrix*vec4(pointLightPositionRadius.xyz+(inPosition*pointLightPositionRadius.a),1);
+    gl_Position=g_WorldViewProjectionMatrix*vec4(pointLightPositionRadius.xyz+(inPosition*pointLightPositionRadius.a*1.1),1);
     }
 }

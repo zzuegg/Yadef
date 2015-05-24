@@ -22,12 +22,12 @@ import java.util.Collection;
 /**
  * Created by MiZu on 21.05.2015.
  */
-public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
+public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
     AssetManager assetManager;
     Material pointLightMaterial;
     Geometry pointLightGeometry;
 
-    public DefaultPointLightTechnique(AssetManager assetManager) {
+    public PatchedPointLightTechnique(AssetManager assetManager) {
         this.assetManager = assetManager;
         this.pointLightGeometry = generatePointLightMesh();
         this.pointLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/PointLight/PointLight.j3md");
@@ -56,7 +56,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
                 Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
                 Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
                 i = i + size;
-                pointLightMaterial.setParam("lightCount", VarType.Int, size - 1);
+                pointLightMaterial.setParam("lightCount", VarType.Int, size);
                 pointLightMaterial.setParam("lightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);
                 pointLightMaterial.setParam("lightColors", VarType.Vector3Array, pointLightColorsTmp);
                 pointLightGeometry.setMaterial(pointLightMaterial);
@@ -71,6 +71,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
     public void renderDebug(GBuffer gBuffer, RenderManager renderManager, ArrayList<PointLight> lightList) {
         RenderState forcedRenderState = renderManager.getForcedRenderState();
         RenderState renderState = new RenderState();
+        renderState.setFaceCullMode(RenderState.FaceCullMode.Front);
         renderState.setWireframe(true);
         renderManager.setForcedRenderState(renderState);
         if (lightList.size() > 0) {
@@ -92,7 +93,7 @@ public class DefaultPointLightTechnique implements LightTechnique<PointLight> {
                 Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
                 Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
                 i = i + size;
-                pointLightMaterial.setParam("lightCount", VarType.Int, size - 1);
+                pointLightMaterial.setParam("lightCount", VarType.Int, size);
                 pointLightMaterial.setParam("lightPositionRadius", VarType.Vector4Array, pointLightPositionRadiusTmp);
                 pointLightMaterial.setParam("lightColors", VarType.Vector3Array, pointLightColorsTmp);
                 renderManager.renderGeometry(pointLightGeometry);
