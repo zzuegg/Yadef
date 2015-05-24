@@ -9,6 +9,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.post.SceneProcessor;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.SimpleBatchNode;
 import com.jme3.scene.shape.Box;
 import gg.zue.yadef.DeferredRenderer;
@@ -79,6 +80,7 @@ class YadefTest extends SimpleApplication {
     }
 
     private void addSpotLights(int count) {
+        Node lightNode = new Node();
         for (int i = 0; i < count; i++) {
             SpotLight pointLight = new SpotLight();
             pointLight.setColor(ColorRGBA.randomColor().mult(2));
@@ -90,8 +92,9 @@ class YadefTest extends SimpleApplication {
             float v1 = 15;//Math.max(v - 4, 1;
             pointLight.setSpotOuterAngle(v * FastMath.DEG_TO_RAD);
             pointLight.setSpotInnerAngle(v1 * FastMath.DEG_TO_RAD);
-            rootNode.addLight(pointLight);
+            lightNode.addLight(pointLight);
         }
+        rootNode.attachChild(lightNode);
     }
 
     private void addPointLights(int count) {

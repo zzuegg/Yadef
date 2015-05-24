@@ -13,6 +13,9 @@ import gg.zue.yadef.renderpasses.DeferredRenderManager;
 import gg.zue.yadef.renderpasses.LightManager;
 import gg.zue.yadef.renderpasses.PostDeferredManager;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 /**
  * Created by MiZu on 21.05.2015.
  */
@@ -31,14 +34,15 @@ public class DeferredRenderer implements SceneProcessor {
 
     private boolean debugLightVolumes = false;
     private boolean debugGBufferTextures = false;
+    private boolean updateLightListMultiThreaded = true;
 
     public DeferredRenderer(Application application) {
         this.application = application;
         this.assetManager = application.getAssetManager();
         this.gBuffer = new GBuffer();
-        int maxUniformParameters=((GLRenderer)application.getRenderer()).getLimits().get(Limits.VertexUniformComponents);
+        int maxUniformParameters = ((GLRenderer) application.getRenderer()).getLimits().get(Limits.VertexUniformComponents);
         this.DeferredRenderManager = new DeferredRenderManager();
-        this.lightManager = new LightManager(assetManager,maxUniformParameters);
+        this.lightManager = new LightManager(assetManager, maxUniformParameters);
         this.postDeferredManager = new PostDeferredManager(assetManager);
     }
 
@@ -69,9 +73,23 @@ public class DeferredRenderer implements SceneProcessor {
 
     @Override
     public void postQueue(RenderQueue renderQueue) {
+        if (updateLightListMultiThreaded) {
+            Future<Boolean> lightUpdateDone = lightManager.updateVisibleLights(viewPort.getScenes().get(0), viewPort.getCamera(), true);
+            DeferredRenderManager.renderOpaqueQueue(gBuffer, renderManager, viewPort, renderQueue);
+            try {
+                lightUpdateDone.get();
+                lightManager.render(gBuffer, renderManager, viewPort);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        } else {
+            DeferredRenderManager.renderOpaqueQueue(gBuffer, renderManager, viewPort, renderQueue);
+            lightManager.updateVisibleLights(viewPort.getScenes().get(0), viewPort.getCamera(), false);
+            lightManager.render(gBuffer, renderManager, viewPort);
+        }
 
-        DeferredRenderManager.renderOpaqueQueue(gBuffer, renderManager, viewPort, renderQueue);
-        lightManager.render(gBuffer, renderManager, viewPort);
 
         postDeferredManager.render(gBuffer, renderManager, viewPort, renderQueue);
         postDeferredManager.renderSkyQueue(renderManager, viewPort, renderQueue);
@@ -93,6 +111,10 @@ public class DeferredRenderer implements SceneProcessor {
 
     public void setDebugGBufferTextures(boolean debugGBufferTextures) {
         this.debugGBufferTextures = debugGBufferTextures;
+    }
+
+    public void setUpdateLightListMultiThreaded(boolean updateLightListMultiThreaded) {
+        this.updateLightListMultiThreaded = updateLightListMultiThreaded;
     }
 
     @Override

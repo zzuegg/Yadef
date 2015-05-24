@@ -6,12 +6,18 @@ import com.jme3.material.RenderState;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 import gg.zue.yadef.GBuffer;
 import gg.zue.yadef.renderpasses.lighttechniques.*;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 /**
@@ -31,12 +37,15 @@ public class LightManager {
     private LightTechnique<PointLight> pointLightLightTechnique;
     private LightTechnique<SpotLight> spotLightLightTechnique;
 
+    ExecutorService executorService;
+
     private LightManager() {
         this.renderState = new RenderState();
         this.renderState.setStencil(true, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.TestFunction.Less, RenderState.TestFunction.Less);
         this.renderState.setBlendMode(RenderState.BlendMode.Additive);
         this.renderState.setDepthTest(false);
         this.renderState.setDepthWrite(false);
+        this.executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
     public LightManager(AssetManager assetManager, int maxUniformParameters) {
@@ -44,8 +53,8 @@ public class LightManager {
         this.assetManager = assetManager;
         ambientLightLightTechnique = new DefaultAmbientLightTechnique();
         directionalLightLightTechnique = new DefaultDirectionalLightTechnique(assetManager);
-        pointLightLightTechnique = new PatchedPointLightTechnique(assetManager,maxUniformParameters);
-        spotLightLightTechnique = new PatchedSpotLightTechnique(assetManager,maxUniformParameters);
+        pointLightLightTechnique = new PatchedPointLightTechnique(assetManager, maxUniformParameters);
+        spotLightLightTechnique = new PatchedSpotLightTechnique(assetManager, maxUniformParameters);
     }
 
 
@@ -54,13 +63,6 @@ public class LightManager {
 
         renderManager.setForcedRenderState(renderState);
         renderManager.getRenderer().setFrameBuffer(gBuffer.getLightFrameBuffer());
-        //todo: there is probably a better way
-        ambientLights.clear();
-        pointLights.clear();
-        spotLights.clear();
-        directionalLights.clear();
-        getVisibleLights(ambientLights, pointLights, spotLights, directionalLights, viewPort.getScenes().get(0).getWorldLightList(), viewPort.getCamera());
-        //todo: until here
 
 
         //Ambient Light
@@ -90,7 +92,29 @@ public class LightManager {
         spotLightLightTechnique.renderDebug(gBuffer, renderManager, spotLights);
     }
 
-    private void getVisibleLights(ArrayList<AmbientLight> ambientLights, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, ArrayList<DirectionalLight> directionalLights, LightList lightlist, Camera camera) {
+    public Future<Boolean> updateVisibleLights(Spatial startNode, Camera camera, boolean threaded) {
+        if (threaded) {
+            return executorService.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    updateVisibleLights(startNode, camera);
+                    return true;
+                }
+            });
+        } else {
+            updateVisibleLights(startNode, camera);
+        }
+        return null;
+    }
+
+
+    private Boolean updateVisibleLights(Spatial startNode, Camera camera) {
+
+        ambientLights.clear();
+        pointLights.clear();
+        spotLights.clear();
+        directionalLights.clear();
+        LightList lightlist = startNode.getWorldLightList();
         TempVars tempVars = TempVars.get();
         for (Light light : lightlist) {
             if (light.intersectsFrustum(camera, tempVars)) {
@@ -112,5 +136,6 @@ public class LightManager {
             }
         }
         tempVars.release();
+        return true;
     }
 }
