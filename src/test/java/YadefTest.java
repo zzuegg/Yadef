@@ -122,6 +122,7 @@ public class YadefTest extends SimpleApplication {
             viewPort.removeProcessor(sceneProcessor);
         }
         DeferredRenderer deferredRenderer = new DeferredRenderer(this);
+        deferredRenderer.setDebugLightVolumes(true);
         viewPort.addProcessor(deferredRenderer);
         Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
         material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));

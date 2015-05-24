@@ -7,6 +7,8 @@ import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.Renderer;
+import com.jme3.renderer.opengl.GLRenderer;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Sphere;
@@ -26,11 +28,13 @@ public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
     AssetManager assetManager;
     Material pointLightMaterial;
     Geometry pointLightGeometry;
-
-    public PatchedPointLightTechnique(AssetManager assetManager) {
+    int maxLights;
+    public PatchedPointLightTechnique(AssetManager assetManager, int maxUniformParameters) {
         this.assetManager = assetManager;
         this.pointLightGeometry = generatePointLightMesh();
         this.pointLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/PointLight/PointLight.j3md");
+        maxLights=(maxUniformParameters-16-4-12-1)/8;
+        pointLightMaterial.setInt("maxLights",maxLights);
     }
 
     @Override
@@ -52,7 +56,7 @@ public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
             }
             renderManager.setForcedTechnique(null);
             for (int i = 0; i < pointLightColors.length; ) {
-                int size = Math.min(500, pointLightColors.length - i);
+                int size = Math.min(maxLights, pointLightColors.length - i);
                 Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
                 Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
                 i = i + size;
@@ -89,7 +93,7 @@ public class PatchedPointLightTechnique implements LightTechnique<PointLight> {
             }
             renderManager.setForcedTechnique("DebugPointLights");
             for (int i = 0; i < pointLightColors.length; ) {
-                int size = Math.min(500, pointLightColors.length - i);
+                int size = Math.min(maxLights, pointLightColors.length - i);
                 Vector3f[] pointLightColorsTmp = Arrays.copyOfRange(pointLightColors, i, i + size);
                 Vector4f[] pointLightPositionRadiusTmp = Arrays.copyOfRange(pointLightPositionRadius, i, i + size);
                 i = i + size;

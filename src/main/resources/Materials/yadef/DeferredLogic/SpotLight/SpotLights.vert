@@ -5,9 +5,9 @@ out vec4 lightPositionOuterAngle;
 out vec4 lightDirectionRange;
 
 uniform int m_lightCount;
-uniform vec4[300] m_spotLightPositionAngle;
-uniform vec4[300] m_spotLightDirectionRange;
-uniform vec4[300] m_spotLightColorInnerAngle;
+uniform vec4[MAX_LIGHTS] m_spotLightPositionAngle;
+uniform vec4[MAX_LIGHTS] m_spotLightDirectionRange;
+uniform vec4[MAX_LIGHTS] m_spotLightColorInnerAngle;
 
 const float offsetMod[5]=float[5](0,1,1,1,1);
 const vec3 upMod[5]=vec3[5](    vec3(0),vec3(1),vec3(1),vec3(-1),vec3(-1));

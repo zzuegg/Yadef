@@ -26,6 +26,7 @@ public class DefaultDirectionalLightTechnique implements LightTechnique<Directio
         this.assetManager = assetManager;
         this.fsQuad = new Geometry("FsQuad", new Quad(1, 1));
         this.directionalLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLight.j3md");
+        this.directionalLightMaterial.setInt("maxLights", 20);
     }
 
     @Override

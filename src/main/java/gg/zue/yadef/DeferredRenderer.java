@@ -4,13 +4,19 @@ import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
 import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.Limits;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.opengl.GLRenderer;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.texture.FrameBuffer;
 import gg.zue.yadef.renderpasses.DeferredRenderManager;
 import gg.zue.yadef.renderpasses.LightManager;
 import gg.zue.yadef.renderpasses.PostDeferredManager;
+
+import java.lang.reflect.Field;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Created by MiZu on 21.05.2015.
@@ -34,10 +40,19 @@ public class DeferredRenderer implements SceneProcessor {
         this.application = application;
         this.assetManager = application.getAssetManager();
         this.gBuffer = new GBuffer();
-
+        int maxUniformParameters=((GLRenderer)application.getRenderer()).getLimits().get(Limits.VertexUniformComponents);
         this.DeferredRenderManager = new DeferredRenderManager();
-        this.lightManager = new LightManager(assetManager);
+        this.lightManager = new LightManager(assetManager,maxUniformParameters);
         this.postDeferredManager = new PostDeferredManager(assetManager);
+        /*try {
+            Field limits = GLRenderer.class.getField("limits");
+            limits.setAccessible(true);
+            EnumMap<Limits, Integer> rendererLimits = (EnumMap<Limits, Integer>) limits.get(application.getRenderer());
+            System.out.println(rendererLimits.get("FLIMIT: " + Limits.FragmentUniforms));
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }*/
+
     }
 
     @Override

@@ -7,14 +7,19 @@ MaterialDef DeferredDebug {
         Texture2D gbLight;
         Texture2D gbOutput;
 
+        Int maxLights : 1;
         Int lightCount;
         Vector3Array lightDirections;
         Vector3Array lightColors;
+
     }
     Technique {
         VertexShader GLSL150: Materials/yadef/DeferredLogic/Common/FsQuad.vert
         FragmentShader GLSL150: Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLights.frag
         WorldParameters {
             NormalMatrix
+        }
+        Defines{
+            MAX_LIGHTS : maxLights
         }
     }

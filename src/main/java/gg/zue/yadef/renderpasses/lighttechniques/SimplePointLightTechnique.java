@@ -31,6 +31,7 @@ public class SimplePointLightTechnique implements LightTechnique<PointLight> {
         this.assetManager = assetManager;
         this.pointLightGeometry = generatePointLightMesh(1);
         this.pointLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/PointLight/PointLight.j3md");
+        this.pointLightMaterial.setInt("maxLights",1);
     }
 
     @Override

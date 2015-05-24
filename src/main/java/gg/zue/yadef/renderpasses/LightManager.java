@@ -31,7 +31,7 @@ public class LightManager {
     LightTechnique<PointLight> pointLightLightTechnique;
     LightTechnique<SpotLight> spotLightLightTechnique;
 
-    public LightManager() {
+    private LightManager() {
         this.renderState = new RenderState();
         this.renderState.setStencil(true, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.StencilOperation.Keep, RenderState.TestFunction.Less, RenderState.TestFunction.Less);
         this.renderState.setBlendMode(RenderState.BlendMode.Additive);
@@ -39,13 +39,13 @@ public class LightManager {
         this.renderState.setDepthWrite(false);
     }
 
-    public LightManager(AssetManager assetManager) {
+    public LightManager(AssetManager assetManager, int maxUniformParameters) {
         this();
         this.assetManager = assetManager;
         ambientLightLightTechnique = new DefaultAmbientLightTechnique();
         directionalLightLightTechnique = new DefaultDirectionalLightTechnique(assetManager);
-        pointLightLightTechnique = new PatchedPointLightTechnique(assetManager);
-        spotLightLightTechnique = new PatchedSpotLightTechnique(assetManager);
+        pointLightLightTechnique = new PatchedPointLightTechnique(assetManager,maxUniformParameters);
+        spotLightLightTechnique = new PatchedSpotLightTechnique(assetManager,maxUniformParameters);
     }
 
 

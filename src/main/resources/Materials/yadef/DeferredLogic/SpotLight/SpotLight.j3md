@@ -7,6 +7,7 @@ MaterialDef PointLight {
         Texture2D gbLight;
         Texture2D gbOutput;
 
+        Int maxLights;
         Int lightCount;
         Vector4Array spotLightPositionAngle;
         Vector4Array spotLightColorInnerAngle;
@@ -21,6 +22,10 @@ MaterialDef PointLight {
             Resolution
             NormalMatrix
         }
+
+                Defines{
+                    MAX_LIGHTS : maxLights
+                }
     }
     Technique DebugSpotLights{
             VertexShader GLSL150:   Materials/yadef/DeferredLogic/SpotLight/SpotLights.vert
@@ -29,5 +34,9 @@ MaterialDef PointLight {
             WorldParameters {
                 WorldViewProjectionMatrix
             }
+
+                    Defines{
+                        MAX_LIGHTS : maxLights
+                    }
     }
 }

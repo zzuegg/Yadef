@@ -1,8 +1,8 @@
 #extension GL_ARB_separate_shader_objects : enable
 uniform mat3 g_NormalMatrix;
 
-uniform vec3[200] m_lightDirections;
-uniform vec3[200] m_lightColors;
+uniform vec3[MAX_LIGHTS] m_lightDirections;
+uniform vec3[MAX_LIGHTS] m_lightColors;
 uniform int m_lightCount;
 
 uniform sampler2D m_gbWorldPosLinearDepth;

@@ -34,11 +34,15 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
         this.assetManager = assetManager;
         spotLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/SpotLight/SpotLight.j3md");
         spotLightGeometry = buildGeometry(1);
+        spotLightMaterial.setInt("maxLights",1);
     }
 
     @Override
     public void render(GBuffer gBuffer, RenderManager renderManager, ArrayList<SpotLight> lightList) {
         gBuffer.passGBufferToShader(spotLightMaterial);
+        if (renderManager.getForcedRenderState() != null) {
+            renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
+        }
         for (SpotLight spotLight : lightList) {
             Vector3f position = spotLight.getPosition();
             Vector3f direction = spotLight.getDirection();
@@ -53,6 +57,9 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
                 renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
             }
             renderManager.renderGeometry(spotLightGeometry);
+        }
+        if (renderManager.getForcedRenderState() != null) {
+            renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
         }
     }
 

@@ -32,12 +32,16 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
     private final AssetManager assetManager;
     private Material spotLightMaterial;
     private Geometry spotLightGeometry;
-    int patchCount = 300;
-    public PatchedSpotLightTechnique(AssetManager assetManager) {
+    int maxLights;
+    public PatchedSpotLightTechnique(AssetManager assetManager, int maxUniformParameters) {
         this.assetManager = assetManager;
         spotLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/SpotLight/SpotLight.j3md");
         spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
-        spotLightGeometry=buildGeometry(patchCount);
+        maxLights=(maxUniformParameters-100)/12;
+        //maxLights=334;
+        System.out.println("Spotlights: "+maxLights);
+        spotLightMaterial.setInt("maxLights", maxLights);
+        spotLightGeometry=buildGeometry(maxLights);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
                 renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
             }
             for (int i = 0; i < spotLightPositionAngle.length; ) {
-                int size = Math.min(300, spotLightPositionAngle.length - i);
+                int size = Math.min(maxLights, spotLightPositionAngle.length - i);
                 Vector4f[] spotLightPositionAngleTmp = Arrays.copyOfRange(spotLightPositionAngle, i, i + size);
                 Vector4f[] spotLightDirectionRangeTmp = Arrays.copyOfRange(spotLightDirectionRange, i, i + size);
                 Vector4f[] spotLightColorInnerAngleTmp = Arrays.copyOfRange(spotLightColorInnerAngle, i, i + size);
@@ -100,10 +104,10 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
             renderManager.setForcedTechnique(null);
             renderManager.setForcedTechnique("DebugSpotLights");
             if (renderManager.getForcedRenderState() != null) {
-                renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
+                renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
             }
             for (int i = 0; i < spotLightPositionAngle.length; ) {
-                int size = Math.min(300, spotLightPositionAngle.length - i);
+                int size = Math.min(maxLights, spotLightPositionAngle.length - i);
                 Vector4f[] spotLightPositionAngleTmp = Arrays.copyOfRange(spotLightPositionAngle, i, i + size);
                 Vector4f[] spotLightDirectionRangeTmp = Arrays.copyOfRange(spotLightDirectionRange, i, i + size);
                 Vector4f[] spotLightColorInnerAngleTmp = Arrays.copyOfRange(spotLightColorInnerAngle, i, i + size);
@@ -113,6 +117,9 @@ public class PatchedSpotLightTechnique implements LightTechnique<SpotLight> {
                 spotLightMaterial.setParam("spotLightDirectionRange", VarType.Vector4Array, spotLightDirectionRangeTmp);
                 spotLightMaterial.setParam("spotLightColorInnerAngle", VarType.Vector4Array, spotLightColorInnerAngleTmp);
                 renderManager.renderGeometry(spotLightGeometry);
+            }
+            if (renderManager.getForcedRenderState() != null) {
+                renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
             }
         }
     }
