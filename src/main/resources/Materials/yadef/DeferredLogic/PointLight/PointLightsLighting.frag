@@ -8,7 +8,8 @@ uniform vec3 g_CameraPosition;
 in vec3 lightColor;
 in vec4 pointLightPositionRadius;
 
-layout (location = 0) out vec4 lightOut;
+layout (location = 0) out vec3 lightOut;
+layout (location = 1) out vec3 lightOutSpecular;
 
 uniform sampler2D m_gbWorldPosLinearDepth;
 uniform sampler2D m_gbWorldNormal;
@@ -46,6 +47,7 @@ void main(){
         //float specularFactor=
         vec3 diffuseFactor=fallof*lambert*lightColor;
 
-        lightOut=vec4(diffuseFactor,specularCoefficient);
+        lightOut=diffuseFactor;//vec4(diffuseFactor,specularCoefficient);
+        lightOutSpecular=specularCoefficient*lightColor*fallof;
         //lightOut=vec4(lightColor,1);
 }

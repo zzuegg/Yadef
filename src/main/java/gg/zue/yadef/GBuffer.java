@@ -19,6 +19,7 @@ public class GBuffer {
     private Texture2D albedo;
     private Texture2D specular;
     private Texture2D light;
+    private Texture2D lightSpecular;
     private Texture2D depthStencil;
     private Texture2D outputTexture;
 
@@ -33,6 +34,7 @@ public class GBuffer {
             deferredFrameBuffer.setMultiTarget(true);
 
             lightFrameBuffer = new FrameBuffer(width, height, 1);
+            lightFrameBuffer.setMultiTarget(true);
             outputFrameBuffer = new FrameBuffer(width, height, 1);
 
             //worldPositionLinearDepth = applyFilters(new Texture2D(width, height, Image.Format.RGBA32F));
@@ -40,7 +42,8 @@ public class GBuffer {
             albedo = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
             specular = applyFilters(new Texture2D(width, height, Image.Format.RGB8));
             depthStencil = new Texture2D(width, height, Image.Format.Depth24Stencil8);
-            light = applyFilters(new Texture2D(width, height, Image.Format.RGBA16F));
+            light = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
+            lightSpecular = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
             outputTexture = applyFilters(new Texture2D(width, height, Image.Format.RGBA16F));
 
             //deferredFrameBuffer.addColorTexture(worldPositionLinearDepth);
@@ -50,8 +53,8 @@ public class GBuffer {
             deferredFrameBuffer.setDepthTexture(depthStencil);
 
             lightFrameBuffer.setDepthTexture(depthStencil);
-            lightFrameBuffer.setColorTexture(light);
-
+            lightFrameBuffer.addColorTexture(light);
+            lightFrameBuffer.addColorTexture(lightSpecular);
             outputFrameBuffer.setDepthTexture(depthStencil);
             outputFrameBuffer.setColorTexture(outputTexture);
         }
@@ -82,6 +85,7 @@ public class GBuffer {
         checkParamAndSet(material, "gbAlbedo", albedo);
         checkParamAndSet(material, "gbSpecular", specular);
         checkParamAndSet(material, "gbLight", light);
+        checkParamAndSet(material, "gbLightSpecular", lightSpecular);
         checkParamAndSet(material, "gbDepth", depthStencil);
         checkParamAndSet(material, "gbOutput", outputTexture);
     }

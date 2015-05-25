@@ -15,7 +15,8 @@ in vec2 fragTexCoord;
 
 
 
-layout (location = 0) out vec4 lightOut;
+layout (location = 0) out vec3 lightOut;
+layout (location = 1) out vec3 lightOutSpecular;
 
 vec3 getPosition(in float depth, in vec2 uv){
     vec4 pos = vec4(uv, depth, 1.0) * 2.0 - 1.0;
@@ -36,7 +37,8 @@ void main(){
         float specularCoefficient = pow(cosAngle, 10);
         //specularCoefficient=specularCoefficient*angleFallof*distanceFallof;
         //lightOut +=vec4(specularCoefficient,0,0,0);
-        lightOut += vec4(lambert*m_lightColors[i],specularCoefficient);
+        lightOut += lambert*m_lightColors[i];//,specularCoefficient);
+        lightOutSpecular+=m_lightColors[i]*specularCoefficient;
     }
 
     //lightOut=normalize(lightOut);

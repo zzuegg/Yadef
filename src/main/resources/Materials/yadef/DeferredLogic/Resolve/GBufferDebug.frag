@@ -2,6 +2,8 @@ in vec2 fragTexCoord;
 uniform sampler2D m_gbWorldNormal;
 uniform sampler2D m_gbWorldPosLinearDepth;
 uniform sampler2D m_gbLight;
+uniform sampler2D m_gbLightSpecular;
+uniform sampler2D m_gbSpecular;
 uniform sampler2D m_gbAlbedo;
 uniform sampler2D m_gbDepth;
 uniform sampler2D m_gbOutput;
@@ -18,7 +20,7 @@ void main(){
         }else if(texId>3){
             gl_FragColor=vec4(texture(m_gbLight,sampleTexCoord).xyz,1);
         }else if(texId>2){
-            gl_FragColor=vec4(texture(m_gbLight,sampleTexCoord).xyz*texture(m_gbLight,sampleTexCoord).a,1);
+            gl_FragColor=vec4(texture(m_gbLightSpecular,sampleTexCoord).xyz,1);
         }else if(texId>1){
             gl_FragColor=vec4(texture(m_gbAlbedo,sampleTexCoord).xyz,1);
         }else if(texId>0){

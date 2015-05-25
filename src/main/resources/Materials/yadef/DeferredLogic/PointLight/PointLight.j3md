@@ -7,7 +7,7 @@ MaterialDef PointLight {
         Texture2D gbLight;
         Texture2D gbOutput;
         Texture2D gbDepth;
-
+        Texture2D gbLightSpecular;
         Int lightCount;
         Int maxLights;
         Vector4Array lightPositionRadius;

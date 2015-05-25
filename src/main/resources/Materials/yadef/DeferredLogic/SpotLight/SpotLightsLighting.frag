@@ -8,7 +8,8 @@ in vec4 lightColorInnerAngle;
 in vec4 lightPositionOuterAngle;
 in vec4 lightDirectionRange;
 
-layout (location = 0) out vec4 lightOut;
+layout (location = 0) out vec3 lightOut;
+layout (location = 1) out vec3 lightOutSpecular;
 
 //uniform sampler2D m_gbWorldPosLinearDepth;
 uniform sampler2D m_gbDepth;
@@ -52,5 +53,6 @@ void main(){
         float cosAngle = max(0.0, dot(g_NormalMatrix*surfaceToCamera, reflectionVector));
         float specularCoefficient = pow(cosAngle, 10);
         specularCoefficient=specularCoefficient*angleFallof*distanceFallof;
-        lightOut=vec4(color,specularCoefficient);//specularCoefficient*angleFallof*distanceFallof);
+        lightOut=color;//,specularCoefficient);//specularCoefficient*angleFallof*distanceFallof);
+        lightOutSpecular=lightColorInnerAngle.xyz*specularCoefficient;
 }
