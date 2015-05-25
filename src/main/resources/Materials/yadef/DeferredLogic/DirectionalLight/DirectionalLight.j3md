@@ -18,6 +18,8 @@ MaterialDef DeferredDebug {
         FragmentShader GLSL150: Materials/yadef/DeferredLogic/DirectionalLight/DirectionalLights.frag
         WorldParameters {
             NormalMatrix
+            CameraPosition
+            ViewProjectionMatrixInverse
         }
         Defines{
             MAX_LIGHTS : maxLights

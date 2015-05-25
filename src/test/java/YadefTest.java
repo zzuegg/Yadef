@@ -32,11 +32,11 @@ class YadefTest extends SimpleApplication {
         initDeferred();
         //initRegular();
 
-        //addAmbientLight();
-        //addDirectionalLights();
+        addAmbientLight();
+        addDirectionalLights();
         addPointLights(50);
         addSpotLights(50);
-        //addFPSFLashLight();
+        addFPSFLashLight();
 
         addSphereGrid();
 
@@ -68,7 +68,7 @@ class YadefTest extends SimpleApplication {
         flashLight = new SpotLight();
         flashLight.setSpotInnerAngle(6 * FastMath.DEG_TO_RAD);
         flashLight.setSpotOuterAngle(10 * FastMath.DEG_TO_RAD);
-        flashLight.setColor(ColorRGBA.White);
+        flashLight.setColor(ColorRGBA.Red);
         flashLight.setSpotRange(300f);
         rootNode.addLight(flashLight);
     }
