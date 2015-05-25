@@ -3,6 +3,8 @@
 uniform mat3 g_NormalMatrix;
 uniform mat4 g_ViewProjectionMatrixInverse;
 uniform vec2 g_Resolution;
+uniform vec3 g_CameraPosition;
+
 in vec3 lightColor;
 in vec4 pointLightPositionRadius;
 
@@ -33,6 +35,17 @@ void main(){
         float lambert = clamp(dot(worldNormal, g_NormalMatrix*lightDir), 0.0, 1.0);
         float dist = length(lightVector);
         float fallof = attenuation(pointLightPositionRadius.a, dist);
-        lightOut=vec4(fallof*lambert*lightColor,1);
+
+
+        vec3 incidenceVector = -lightDir; //a unit vector
+        vec3 reflectionVector = reflect(g_NormalMatrix*incidenceVector, worldNormal); //also a unit vector
+        vec3 surfaceToCamera = normalize(g_CameraPosition - worldPos); //also a unit vector
+        float cosAngle = max(0.0, dot(g_NormalMatrix*surfaceToCamera, reflectionVector));
+        float specularCoefficient = pow(cosAngle, 10);
+
+        //float specularFactor=
+        vec3 diffuseFactor=fallof*lambert*lightColor;
+
+        lightOut=vec4(diffuseFactor,specularCoefficient);
         //lightOut=vec4(lightColor,1);
 }

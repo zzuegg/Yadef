@@ -1,5 +1,6 @@
 #extension GL_ARB_separate_shader_objects : enable
 uniform mat3 g_NormalMatrix;
+uniform vec3 g_CameraPosition;
 
 uniform vec3[MAX_LIGHTS] m_lightDirections;
 uniform vec3[MAX_LIGHTS] m_lightColors;

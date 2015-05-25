@@ -2,6 +2,7 @@
 uniform mat4 g_ViewProjectionMatrixInverse;
 uniform mat3 g_NormalMatrix;
 uniform vec2 g_Resolution;
+uniform vec3 g_CameraPosition;
 
 in vec4 lightColorInnerAngle;
 in vec4 lightPositionOuterAngle;
@@ -42,7 +43,14 @@ void main(){
         float innerAngleCos = cos(lightColorInnerAngle.a);
 
         float angleFallof = clamp((currAngleCos-outerAngleCos)/(innerAngleCos-outerAngleCos), 0.0, 1.0);
-        vec4 color=vec4(lightColorInnerAngle.xyz,1);
+        vec3 color=vec3(lightColorInnerAngle.xyz);
         color=color*distanceFallof*angleFallof*lambert;
-        lightOut=color;
+
+        vec3 incidenceVector = lightDirection; //a unit vector
+        vec3 reflectionVector = reflect(g_NormalMatrix*incidenceVector, worldNormal); //also a unit vector
+        vec3 surfaceToCamera = normalize(g_CameraPosition - worldPos); //also a unit vector
+        float cosAngle = max(0.0, dot(g_NormalMatrix*surfaceToCamera, reflectionVector));
+        float specularCoefficient = pow(cosAngle, 10);
+        specularCoefficient=specularCoefficient*angleFallof*distanceFallof;
+        lightOut=vec4(color,specularCoefficient);//specularCoefficient*angleFallof*distanceFallof);
 }

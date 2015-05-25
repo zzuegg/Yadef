@@ -12,6 +12,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.SimpleBatchNode;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Sphere;
 import gg.zue.yadef.DeferredRenderer;
 
 
@@ -26,16 +27,16 @@ class YadefTest extends SimpleApplication {
         flyCam.setMoveSpeed(100f);
         flyCam.setDragToRotate(true);
         inputManager.setCursorVisible(true);
-        cube = new Geometry("Cube", new Box(4, 4, 4));
+        cube = new Geometry("Cube", new Sphere(10,10,4));
         cam.setFrustumFar(10000);
         initDeferred();
         //initRegular();
 
-        addAmbientLight();
-        addDirectionalLights();
-        addPointLights(10000);
-        //addSpotLights(100);
-        addFPSFLashLight();
+        //addAmbientLight();
+        //addDirectionalLights();
+        addPointLights(50);
+        addSpotLights(50);
+        //addFPSFLashLight();
 
         addSphereGrid();
 
@@ -80,7 +81,7 @@ class YadefTest extends SimpleApplication {
     }
 
     private void addSpotLights(int count) {
-        Node lightNode = new Node();
+
         for (int i = 0; i < count; i++) {
             SpotLight pointLight = new SpotLight();
             pointLight.setColor(ColorRGBA.randomColor().mult(2));
@@ -92,9 +93,9 @@ class YadefTest extends SimpleApplication {
             float v1 = 15;//Math.max(v - 4, 1;
             pointLight.setSpotOuterAngle(v * FastMath.DEG_TO_RAD);
             pointLight.setSpotInnerAngle(v1 * FastMath.DEG_TO_RAD);
-            lightNode.addLight(pointLight);
+            rootNode.addLight(pointLight);
         }
-        rootNode.attachChild(lightNode);
+        //rootNode.attachChild(lightNode);
     }
 
     private void addPointLights(int count) {
@@ -127,7 +128,7 @@ class YadefTest extends SimpleApplication {
         }
         DeferredRenderer deferredRenderer = new DeferredRenderer(this);
         //deferredRenderer.setDebugLightVolumes(true);
-        //deferredRenderer.setDebugGBufferTextures(true);
+        deferredRenderer.setDebugGBufferTextures(true);
         viewPort.addProcessor(deferredRenderer);
         Material material = new Material(assetManager, "Materials/yadef/Deferred/Deferred.j3md");
         material.setTexture("diffuseTexture", assetManager.loadTexture("Textures/diffuse.jpg"));

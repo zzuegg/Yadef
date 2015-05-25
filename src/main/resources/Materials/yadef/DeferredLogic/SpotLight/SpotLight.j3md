@@ -20,6 +20,7 @@ MaterialDef PointLight {
 
         WorldParameters {
             ViewProjectionMatrixInverse
+            CameraPosition
             WorldViewProjectionMatrix
             Resolution
             NormalMatrix
