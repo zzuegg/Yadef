@@ -12,9 +12,10 @@ import java.util.ArrayList;
  * Created by MiZu on 21.05.2015.
  */
 public class DefaultAmbientLightTechnique implements LightTechnique<AmbientLight> {
+    ColorRGBA ambientColor;
     @Override
     public void render(GBuffer gBuffer, RenderManager renderManager, ArrayList<AmbientLight> lightList) {
-        ColorRGBA ambientColor = new ColorRGBA(0, 0, 0, 0);
+        ambientColor = new ColorRGBA(0, 0, 0, 0);
         for (AmbientLight ambientLight : lightList) {
             ambientColor.addLocal(ambientLight.getColor());
         }
@@ -25,5 +26,9 @@ public class DefaultAmbientLightTechnique implements LightTechnique<AmbientLight
     @Override
     public void renderDebug(GBuffer gBuffer, RenderManager renderManager, ArrayList<AmbientLight> lightList) {
 
+    }
+
+    public ColorRGBA getAmbientLight() {
+        return ambientColor;
     }
 }

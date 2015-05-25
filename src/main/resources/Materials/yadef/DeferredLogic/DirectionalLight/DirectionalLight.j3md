@@ -13,6 +13,7 @@ MaterialDef DeferredDebug {
         Vector3Array lightDirections;
         Vector3Array lightColors;
 
+        Vector3 ambientColorToClear;
     }
     Technique {
         VertexShader GLSL150: Materials/yadef/DeferredLogic/Common/FsQuad.vert

@@ -13,6 +13,7 @@ uniform sampler2D m_gbDepth;
 
 in vec2 fragTexCoord;
 
+uniform vec3 m_ambientColorToClear;
 
 
 layout (location = 0) out vec3 lightOut;
@@ -40,7 +41,7 @@ void main(){
         lightOut += lambert*m_lightColors[i];//,specularCoefficient);
         lightOutSpecular+=m_lightColors[i]*specularCoefficient;
     }
-
+    lightOutSpecular+=-m_ambientColorToClear;
     //lightOut=normalize(lightOut);
     //lightOut=vec4(fragTexCoord,0,0);
 }

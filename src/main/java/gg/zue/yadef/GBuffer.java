@@ -14,7 +14,7 @@ public class GBuffer {
     private FrameBuffer deferredFrameBuffer;
     private FrameBuffer lightFrameBuffer;
     private FrameBuffer outputFrameBuffer;
-    //private Texture2D worldPositionLinearDepth;
+
     private Texture2D worldNormal;
     private Texture2D albedo;
     private Texture2D specular;
@@ -80,7 +80,6 @@ public class GBuffer {
 
     public void passGBufferToShader(Material material) {
 
-        //checkParamAndSet(material, "gbWorldPosLinearDepth", worldPositionLinearDepth);
         checkParamAndSet(material, "gbWorldNormal", worldNormal);
         checkParamAndSet(material, "gbAlbedo", albedo);
         checkParamAndSet(material, "gbSpecular", specular);

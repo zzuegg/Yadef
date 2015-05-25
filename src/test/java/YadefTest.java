@@ -1,4 +1,5 @@
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
@@ -8,6 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.post.SceneProcessor;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.SimpleBatchNode;
@@ -34,13 +36,13 @@ class YadefTest extends SimpleApplication {
 
         addAmbientLight();
         //addDirectionalLights();
-        addPointLights(20);
+        //addPointLights(20);
         addSpotLights(20);
-        //addFPSFLashLight();
+        addFPSFLashLight();
 
         addSphereGrid();
 
-        /*Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
         material.setTexture("NormalMap", assetManager.loadTexture("Textures/normalFlat.jpg"));
         Geometry clone = cube.clone();
@@ -50,7 +52,7 @@ class YadefTest extends SimpleApplication {
         clone.move(0, 20, 0);
         stateManager.attach(new ScreenshotAppState("C:\\Users\\MiZu\\Desktop\\JmeScreenShots\\"));
         setPauseOnLostFocus(false);
-*/
+
 
     }
 

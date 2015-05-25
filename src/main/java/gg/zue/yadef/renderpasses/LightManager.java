@@ -69,6 +69,7 @@ public class LightManager {
         ambientLightLightTechnique.render(gBuffer, renderManager, ambientLights);
 
         renderState.setDepthTest(false);
+        ((DefaultDirectionalLightTechnique) directionalLightLightTechnique).setAmbientLightToClear(((DefaultAmbientLightTechnique) ambientLightLightTechnique).getAmbientLight());
         directionalLightLightTechnique.render(gBuffer, renderManager, directionalLights);
 
         renderState.setDepthTest(true);
