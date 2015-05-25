@@ -27,9 +27,9 @@ float attenuation(float radius,float distance){
 }
 
 void main(){
+        //todo: should be optimized and use glsllibs for the calculations
         vec2 texSample=gl_FragCoord.xy/g_Resolution;
         vec3 worldNormal=texture(m_gbWorldNormal,texSample).xyz;
-        //vec3 worldPos=texture(m_gbWorldPosLinearDepth,texSample).xyz;
         vec3 worldPos=getPosition(texture(m_gbDepth,texSample).r,texSample);
         vec3 lightVector =pointLightPositionRadius.xyz-worldPos;
         vec3 lightDir = normalize(lightVector);
@@ -44,10 +44,8 @@ void main(){
         float cosAngle = max(0.0, dot(g_NormalMatrix*surfaceToCamera, reflectionVector));
         float specularCoefficient = pow(cosAngle, 10);
 
-        //float specularFactor=
         vec3 diffuseFactor=fallof*lambert*lightColor;
 
         lightOut=diffuseFactor;//vec4(diffuseFactor,specularCoefficient);
         lightOutSpecular=specularCoefficient*lightColor*fallof;
-        //lightOut=vec4(lightColor,1);
 }

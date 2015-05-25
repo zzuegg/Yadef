@@ -27,9 +27,9 @@ vec3 getPosition(in float depth, in vec2 uv){
 }
 
 void main(){
+        //todo: should be optimized and use glsllibs for the calculations
         vec2 texSample=gl_FragCoord.xy/g_Resolution;
         vec3 worldNormal=texture(m_gbWorldNormal,texSample).xyz;
-        //vec3 worldPos=texture(m_gbWorldPosLinearDepth,texSample).xyz;
         vec3 worldPos=getPosition(texture(m_gbDepth,texSample).r,texSample);
         vec3 surfaceToLight=lightPositionOuterAngle.xyz-worldPos;
         vec3 lightDirection =lightDirectionRange.xyz;

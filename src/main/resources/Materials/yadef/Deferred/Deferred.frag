@@ -21,5 +21,5 @@ void main(){
     //NormalOut=vec4(normal,1);
     vec3 diffuse=texture(m_diffuseTexture,texCoord).xyz;
     DiffuseOut=diffuse;
-    SpecularOut=diffuse;
+    SpecularOut=vec3(1,0,0);
 }

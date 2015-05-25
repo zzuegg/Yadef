@@ -46,7 +46,6 @@ public class GBuffer {
             lightSpecular = applyFilters(new Texture2D(width, height, Image.Format.RGB16F));
             outputTexture = applyFilters(new Texture2D(width, height, Image.Format.RGBA16F));
 
-            //deferredFrameBuffer.addColorTexture(worldPositionLinearDepth);
             deferredFrameBuffer.addColorTexture(worldNormal);
             deferredFrameBuffer.addColorTexture(albedo);
             deferredFrameBuffer.addColorTexture(specular);

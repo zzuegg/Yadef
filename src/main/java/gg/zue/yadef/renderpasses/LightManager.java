@@ -69,6 +69,7 @@ public class LightManager {
         ambientLightLightTechnique.render(gBuffer, renderManager, ambientLights);
 
         renderState.setDepthTest(false);
+        //todo: change to a clean solution for clearing ambient specularity
         ((DefaultDirectionalLightTechnique) directionalLightLightTechnique).setAmbientLightToClear(((DefaultAmbientLightTechnique) ambientLightLightTechnique).getAmbientLight());
         directionalLightLightTechnique.render(gBuffer, renderManager, directionalLights);
 
@@ -80,7 +81,6 @@ public class LightManager {
 
         //Spot lights
         spotLightLightTechnique.render(gBuffer, renderManager, spotLights);
-        //todo:
 
 
         renderManager.setForcedRenderState(null);

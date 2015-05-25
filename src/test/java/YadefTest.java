@@ -36,8 +36,8 @@ class YadefTest extends SimpleApplication {
 
         addAmbientLight();
         //addDirectionalLights();
-        //addPointLights(20);
-        addSpotLights(20);
+        addPointLights(50);
+        addSpotLights(50);
         addFPSFLashLight();
 
         addSphereGrid();

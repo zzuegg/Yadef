@@ -24,7 +24,7 @@ void main(){
         }else if(texId>1){
             gl_FragColor=vec4(texture(m_gbAlbedo,sampleTexCoord).xyz,1);
         }else if(texId>0){
-            gl_FragColor=texture(m_gbDepth,sampleTexCoord);
+            gl_FragColor=texture(m_gbSpecular,sampleTexCoord);
             //gl_FragColor=vec4(depth,depth,depth,1);
         }
     }else{

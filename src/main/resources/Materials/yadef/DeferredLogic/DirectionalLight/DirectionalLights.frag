@@ -26,22 +26,19 @@ vec3 getPosition(in float depth, in vec2 uv){
 }
 
 void main(){
+    //todo: should be optimized and use glsllibs for the calculations
     vec3 worldNormal=texture(m_gbWorldNormal,fragTexCoord).xyz;
     vec3 worldPos=getPosition(texture(m_gbDepth,fragTexCoord).r,fragTexCoord);
     for(int i=0;i<m_lightCount;i++){
         float lambert = clamp(dot(worldNormal, g_NormalMatrix*normalize(m_lightDirections[i]*-1.0)), 0.0, 1.0);
-
         vec3 incidenceVector = normalize(m_lightDirections[i]); //a unit vector
         vec3 reflectionVector = reflect(g_NormalMatrix*incidenceVector, worldNormal); //also a unit vector
         vec3 surfaceToCamera = normalize(g_CameraPosition - worldPos); //also a unit vector
         float cosAngle = max(0.0, dot(g_NormalMatrix*surfaceToCamera, reflectionVector));
         float specularCoefficient = pow(cosAngle, 10);
-        //specularCoefficient=specularCoefficient*angleFallof*distanceFallof;
-        //lightOut +=vec4(specularCoefficient,0,0,0);
         lightOut += lambert*m_lightColors[i];//,specularCoefficient);
         lightOutSpecular+=m_lightColors[i]*specularCoefficient;
     }
     lightOutSpecular+=-m_ambientColorToClear;
-    //lightOut=normalize(lightOut);
-    //lightOut=vec4(fragTexCoord,0,0);
+
 }
