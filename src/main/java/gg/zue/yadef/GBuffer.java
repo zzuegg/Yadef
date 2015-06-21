@@ -67,6 +67,8 @@ public class GBuffer {
 
     public FrameBuffer getLightFrameBuffer() {
         return lightFrameBuffer;
+
+
     }
 
     public FrameBuffer getDeferredFrameBuffer() {
