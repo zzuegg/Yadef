@@ -33,15 +33,13 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
     public SimpleSpotLightTechnique(AssetManager assetManager) {
         spotLightMaterial = new Material(assetManager, "Materials/yadef/DeferredLogic/SpotLight/SpotLight.j3md");
         spotLightGeometry = buildGeometry(1);
-        spotLightMaterial.setInt("maxLights",1);
+        spotLightMaterial.setInt("maxLights", 1);
+        spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
     }
 
     @Override
     public void render(GBuffer gBuffer, RenderManager renderManager, ArrayList<SpotLight> lightList) {
         gBuffer.passGBufferToShader(spotLightMaterial);
-        if (renderManager.getForcedRenderState() != null) {
-            renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
-        }
         for (SpotLight spotLight : lightList) {
             Vector3f position = spotLight.getPosition();
             Vector3f direction = spotLight.getDirection();
@@ -52,14 +50,9 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
             spotLightMaterial.setParam("spotLightColorInnerAngle", VarType.Vector4Array, new Vector4f[]{new Vector4f(color.x, color.y, color.z, spotLight.getSpotInnerAngle())});
             spotLightGeometry.setMaterial(spotLightMaterial);
             renderManager.setForcedTechnique(null);
-            if (renderManager.getForcedRenderState() != null) {
-                renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
-            }
             renderManager.renderGeometry(spotLightGeometry);
         }
-        if (renderManager.getForcedRenderState() != null) {
-            renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
-        }
+        renderManager.setForcedMaterial(null);
     }
 
     @Override
@@ -74,7 +67,8 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
             spotLightMaterial.setParam("spotLightColorInnerAngle", VarType.Vector4Array, new Vector4f[]{new Vector4f(color.x, color.y, color.z, spotLight.getSpotInnerAngle())});
             spotLightGeometry.setMaterial(spotLightMaterial);
             spotLightMaterial.getAdditionalRenderState().setWireframe(true);
-            spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
+            spotLightMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+            renderManager.setForcedMaterial(spotLightMaterial);
             renderManager.setForcedTechnique("DebugSpotLights");
             renderManager.renderGeometry(spotLightGeometry);
         }
@@ -85,9 +79,9 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
         Vector3f[] positions = new Vector3f[5];
         positions[0] = new Vector3f(0, 0, 0);
         positions[1] = new Vector3f(-1, -1, -1);
-        positions[1] = new Vector3f(1, -1, -1);
-        positions[1] = new Vector3f(1, -1, 1);
-        positions[1] = new Vector3f(-1, -1, 1);
+        positions[2] = new Vector3f(1, -1, -1);
+        positions[3] = new Vector3f(1, -1, 1);
+        positions[4] = new Vector3f(-1, -1, 1);
         int[] indices = new int[]{
                 0, 1, 2,
                 0, 2, 3,
@@ -96,16 +90,17 @@ public class SimpleSpotLightTechnique implements LightTechnique<SpotLight> {
                 1, 3, 2,
                 4, 3, 1,
         };
-        mesh.setBuffer(VertexBuffer.Type.Index, 3, indices);
-        mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(positions));
-        Geometry tmp = new Geometry("SpotLight", mesh);
-        Collection<Geometry> plGeo = new ArrayList<>();
+        Vector3f[] pTmp = new Vector3f[count * indices.length];
         for (int i = 0; i < count; i++) {
-            plGeo.add(tmp.clone());
+            for (int j = 0; j < indices.length; j++) {
+                pTmp[i * indices.length + j] = positions[indices[j]];
+            }
         }
-        Mesh spotLightMesh = new Mesh();
-        GeometryBatchFactory.mergeGeometries(plGeo, spotLightMesh);
-        return new Geometry("SpotLightPatch", spotLightMesh);
+        //mesh.setBuffer(VertexBuffer.Type.Index, 3, indices);
+        mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(pTmp));
+        Geometry tmp = new Geometry("SpotLight", mesh);
+        System.out.println(tmp.getMesh().getVertexCount());
+        return tmp;
     }
 
 }

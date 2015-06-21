@@ -45,7 +45,7 @@ public class SimplePointLightTechnique implements LightTechnique<PointLight> {
             pointLightGeometry.setMaterial(pointLightMaterial);
             renderManager.renderGeometry(pointLightGeometry);
         }
-        renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
+        renderManager.getForcedRenderState().setFaceCullMode(RenderState.FaceCullMode.Front);
     }
 
     @Override

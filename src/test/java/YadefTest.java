@@ -42,18 +42,7 @@ class YadefTest extends SimpleApplication {
 
         addSphereGrid();
 
-        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
-        material.setTexture("NormalMap", assetManager.loadTexture("Textures/normalFlat.jpg"));
-        Geometry clone = cube.clone();
-        clone.setMaterial(material);
-        clone.setQueueBucket(RenderQueue.Bucket.Translucent);
-        rootNode.attachChild(clone);
-        clone.move(0, 20, 0);
-        stateManager.attach(new ScreenshotAppState("C:\\Users\\MiZu\\Desktop\\JmeScreenShots\\"));
         setPauseOnLostFocus(false);
-
-
     }
 
     @Override
@@ -143,7 +132,6 @@ class YadefTest extends SimpleApplication {
         material.setTexture("DiffuseMap", assetManager.loadTexture("Textures/diffuse.jpg"));
         material.setTexture("NormalMap", assetManager.loadTexture("Textures/normalFlat.jpg"));
         cube.setMaterial(material);
-
         cube.getMaterial().setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 0.5f, 0f));
     }
 

@@ -53,8 +53,8 @@ public class LightManager {
         this.assetManager = assetManager;
         ambientLightLightTechnique = new DefaultAmbientLightTechnique();
         directionalLightLightTechnique = new DefaultDirectionalLightTechnique(assetManager);
-        pointLightLightTechnique = new PatchedPointLightTechnique(assetManager, maxUniformParameters);
-        spotLightLightTechnique = new PatchedSpotLightTechnique(assetManager, maxUniformParameters);
+        pointLightLightTechnique = new SimplePointLightTechnique(assetManager);
+        spotLightLightTechnique = new SimpleSpotLightTechnique(assetManager);
     }
 
 
@@ -73,8 +73,9 @@ public class LightManager {
         ((DefaultDirectionalLightTechnique) directionalLightLightTechnique).setAmbientLightToClear(((DefaultAmbientLightTechnique) ambientLightLightTechnique).getAmbientLight());
         directionalLightLightTechnique.render(gBuffer, renderManager, directionalLights);
 
-        renderState.setDepthTest(true);
-        renderState.setDepthFunc(RenderState.TestFunction.GreaterOrEqual);
+        renderState.setDepthTest(false);
+
+        //renderState.setDepthFunc(RenderState.TestFunction.GreaterOrEqual);
 
         //Point Light
         pointLightLightTechnique.render(gBuffer, renderManager, pointLights);
@@ -118,23 +119,23 @@ public class LightManager {
         LightList lightlist = startNode.getWorldLightList();
         TempVars tempVars = TempVars.get();
         for (Light light : lightlist) {
-            if (light.intersectsFrustum(camera, tempVars)) {
-                switch (light.getType()) {
+            //if (light.intersectsFrustum(camera, tempVars)) {
+            switch (light.getType()) {
 
-                    case Directional:
-                        directionalLights.add((DirectionalLight) light);
-                        break;
-                    case Point:
-                        pointLights.add((PointLight) light);
-                        break;
-                    case Spot:
-                        spotLights.add((SpotLight) light);
-                        break;
-                    case Ambient:
-                        ambientLights.add((AmbientLight) light);
-                        break;
-                }
+                case Directional:
+                    directionalLights.add((DirectionalLight) light);
+                    break;
+                case Point:
+                    pointLights.add((PointLight) light);
+                    break;
+                case Spot:
+                    spotLights.add((SpotLight) light);
+                    break;
+                case Ambient:
+                    ambientLights.add((AmbientLight) light);
+                    break;
             }
+            //}
         }
         tempVars.release();
         return true;

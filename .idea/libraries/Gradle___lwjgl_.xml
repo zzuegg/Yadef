@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: :lwjgl:">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../jMonkeyEngine3/dist/lib/lwjgl.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
